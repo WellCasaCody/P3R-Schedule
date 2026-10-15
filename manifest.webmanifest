@@ -1,7 +1,7 @@
 {
   "name": "Расписание 8М",
   "short_name": "8М",
-  "start_url": "/P3R-Schedule/",
+  "start_url": "/P3R-Schedule/index.html",
   "scope": "/P3R-Schedule/",
   "display": "standalone",
   "orientation": "portrait",
