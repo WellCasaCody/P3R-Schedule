@@ -3,7 +3,7 @@ var ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
-  "./icon.svg"
+  "./icon.png"
 ];
 
 // Установка: кэшируем базовые файлы интерфейса
