@@ -29,10 +29,18 @@ body:not(.p5)::before{content:"";position:fixed;inset:-50%;z-index:-1;background
 @keyframes psh{50%,100%{translate:120% 0}}
 body.p5 .plate{background:#fff;color:#000;border-color:#000;box-shadow:5px 5px 0 var(--hi);animation:glit 3s steps(1) infinite}
 @keyframes glit{0%,90%{translate:0}92%{translate:-5px 2px}95%{translate:5px -2px}}
-.ic{display:flex;gap:8px}
+.ic{display:flex;gap:8px;align-items:center}
 .ic button{width:40px;height:40px;border-radius:50%;background:#000;border:2px solid #fff;font-size:1.1rem;font-style:normal;transition:rotate .2s}
 .ic button:hover{rotate:20deg}.ic button.off{opacity:.5;text-decoration:line-through}
 body.p5 .ic button{border-color:var(--hi);box-shadow:3px 3px 0 var(--hi)}
+
+/* КНОПКА КОНТРАКТА В ШАПКЕ */
+#authBtn{width:auto;border-radius:0;padding:4px 12px;font-family:'Montserrat',sans-serif;font-size:.8rem;font-weight:900;transform:skewX(-10deg);display:flex;align-items:center;gap:6px;box-shadow:3px 3px 0 var(--hi)}
+#authBtn:hover{rotate:0deg;scale:1.05}
+#authBtn img{width:22px;height:22px;border-radius:50%;object-fit:cover;border:1px solid #fff}
+body.p5 #authBtn{background:#fff;color:#000;border-color:#000;box-shadow:3px 3px 0 var(--hi)}
+body.p4 #authBtn{background:#000;color:#ffd400;border-color:#ffd400;box-shadow:3px 3px 0 #ff2d6f}
+
 .scr{position:fixed;inset:0;padding:70px 20px 20px;display:none}
 .scr.on{display:block;animation:scrin .45s cubic-bezier(.2,1,.3,1)}
 @keyframes scrin{from{opacity:0;translate:-60px 0;skew:-6deg}}
@@ -140,8 +148,30 @@ body.lite *,body.lite *::before,body.lite *::after{animation:none!important;tran
 body.lite #bub,body.lite .bg::before{display:none}body.lite .bg{filter:none}
 textarea{-webkit-user-select:text;user-select:text}
 
+/* МОДАЛЬНОЕ ОКНО FIREBASE (VELVET ROOM) */
+#authModal{position:fixed;inset:0;z-index:150;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(5px)}
+#authModal.on{display:flex}
+.auth-box{background:#020617;border:3px solid var(--acc);padding:20px;width:min(95vw,440px);max-height:90vh;overflow-y:auto;transform:skewX(-4deg);box-shadow:0 0 25px rgba(0,0,0,.8);position:relative}
+body.p5 .auth-box{background:#111;border-color:var(--hi);box-shadow:6px 6px 0 var(--hi)}
+body.p4 .auth-box{background:#000;border-color:#ffd400;box-shadow:6px 6px 0 #ff2d6f}
+.auth-ttl{font-family:'Russo One',sans-serif;font-size:1.3rem;color:var(--acc);margin-bottom:4px;text-transform:uppercase}
+body.p5 .auth-ttl{color:var(--hi)} body.p4 .auth-ttl{color:#ffd400}
+.auth-sub{font-size:.78rem;color:#ccc;margin-bottom:12px;font-style:normal}
+.auth-fld{margin-bottom:8px;display:flex;flex-direction:column;gap:3px;text-align:left}
+.auth-fld label{font-size:.7rem;color:var(--acc);text-transform:uppercase}
+.auth-fld input{background:#000;border:1px solid #fff;color:#fff;padding:8px;font:inherit;font-style:normal;outline:none}
+.auth-sec{font-family:'Russo One',sans-serif;font-size:.75rem;color:var(--acc);margin:10px 0 4px;text-transform:uppercase}
+.auth-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:8px}
+.auth-ava{width:100%;aspect-ratio:1;border:2px solid #333;object-fit:cover;cursor:pointer;background:#000;transition:.1s}
+.auth-ava:hover{scale:1.08}
+.auth-ava.sel{border-color:var(--hi);box-shadow:0 0 8px var(--hi);scale:1.05}
+body.p4 .auth-ava.sel{border-color:#ffd400;box-shadow:0 0 8px #ffd400}
+.auth-sub-btn{width:100%;background:var(--hi);color:#fff;padding:10px;font-family:'Russo One';font-size:.95rem;text-transform:uppercase;margin-top:10px;box-shadow:3px 3px 0 #000}
+.auth-tgl{background:none;color:#aaa;text-decoration:underline;font-size:.8rem;margin-top:8px;width:100%;text-align:center}
+
 @media(max-width:720px){
  .bar{padding:10px 12px}.plate{padding:4px 12px;font-size:.8rem}.ic{gap:5px}.ic button{width:34px;height:34px;font-size:.95rem}
+ #authBtn{font-size:.7rem;padding:3px 8px}
  .scr{padding:58px 12px 12px}
  .mm{margin-left:clamp(20px, 8vw, 40px);transform:rotate(-6deg)}
  #mm .mi{font-size:clamp(2rem, 8.5vw, 3.2rem);white-space:nowrap}
@@ -163,6 +193,7 @@ textarea{-webkit-user-select:text;user-select:text}
 <header class="bar">
   <div class="plate"><span>8М КЛАСС</span></div>
   <div class="ic">
+    <button id="authBtn"><span>КОНТРАКТ</span></button>
     <button id="thm" aria-label="Тема (T)">◐</button>
     <button id="ins" style="display:none" aria-label="Установить">⤓</button>
     <button id="sfb" class="off" aria-label="Звуки интерфейса">♬</button>
@@ -212,6 +243,9 @@ textarea{-webkit-user-select:text;user-select:text}
 <div id="toast"></div>
 <div class="hint">↑↓<b>выбор</b> Enter<b>ок</b> Esc<b>назад</b> T<b>тема</b> J<b>lofi</b> A<b>анимации</b></div>
 <div id="wipe"></div>
+
+<!-- МОДАЛКА VELVET ROOM FIREBASE -->
+<div id="authModal"><div class="auth-box" id="authBox"></div></div>
 
 <script>
 var S = [
@@ -290,7 +324,7 @@ function buildMenu() {
     b.className = "mi";
     b.style.setProperty("--i", i);
     b._rz = (Math.random() * 6 - 3);
-    b._sx = 0; // убран паразитный вылет за экран
+    b._sx = 0;
     b.style.setProperty("--rz", b._rz + "deg");
     m[0].split("").forEach(function(c, k) {
       var l = document.createElement("span");
@@ -319,7 +353,7 @@ function pick(i) {
     var d = j - i;
     b.classList.toggle("sel", !d);
     b.style.setProperty("--s", !d ? 1.18 : Math.max(.85, 1 - Math.abs(d) * .08));
-    b.style.setProperty("--x", (!d ? "20px" : "0px")); // плавный выезд активной кнопки вперед
+    b.style.setProperty("--x", (!d ? "20px" : "0px"));
   });
   if (!lite) {
     var b = mm.children[i];
@@ -429,7 +463,7 @@ addEventListener("pointerup", function(e) {
   var hint = document.createElement("div"); hint.className = "swh"; document.body.appendChild(hint);
   function clr() { gh.style.marginLeft = ""; dy.style.translate = ""; document.querySelectorAll("#dy .nx").forEach(function(b) { b.classList.remove("nx"); }); }
   addEventListener("pointerdown", function(e) {
-    if (cur != "m-sched" || e.target.closest("#dy,.back,#nm")) return;
+    if (cur != "m-sched" || e.target.closest("#dy,.back,#nm,#authModal")) return;
     if (e.pointerType == "mouse" && e.button) return;
     sx = e.clientX; sy = e.clientY; dx = 0; dn = true; lock = 0; pv = null;
   });
@@ -468,6 +502,7 @@ addEventListener("pointerup", function(e) {
 function dayFx(dir) {
   sfx("swipe"); if (lite) return;
   var bd = document.body, p5 = bd.classList.contains("p5"), b = document.querySelector("#dy .on");
+  if (!b) return;
   var r = b.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
   var main = p5 ? "#e60012" : "#22d3ff", alt = p5 ? "#000" : "#fff";
   function mk(css, cls) { var e = document.createElement("div"); e.className = cls || ""; e.style.cssText = css; bd.appendChild(e); return e; }
@@ -528,7 +563,10 @@ function updToday(force) {
 var nk = null;
 function nopen(k) { nk = k; $("#nt0").textContent = k.split("|")[2]; $("#nta").value = NOTES[k] || ""; $("#nm").classList.add("on"); setTimeout(function() { $("#nta").focus(); }, 60); }
 function nclose() { $("#nm").classList.remove("on"); nk = null; }
-function nsave() { try { localStorage.notes = JSON.stringify(NOTES); } catch(e) {} }
+function nsave() { 
+  try { localStorage.notes = JSON.stringify(NOTES); } catch(e) {}
+  if (window.syncNotesToFirebase) window.syncNotesToFirebase(NOTES);
+}
 function nrefresh() { if (cur == "m-sched") draw(); else updToday(true); }
 
 $("#nsv").onclick = function() { var v = $("#nta").value.trim(); if (v) NOTES[nk] = v; else delete NOTES[nk]; nsave(); nclose(); nrefresh(); sfx("ok"); };
@@ -724,8 +762,9 @@ for (var i = 0; i < 40; i++) B.push({x: Math.random(), y: Math.random(), r: 2 + 
 /* КЛАВИАТУРА */
 document.addEventListener("keydown", function(e) {
   var k = e.key;
-  if (e.target.tagName == "TEXTAREA") { if (k == "Escape") nclose(); return; }
+  if (e.target.tagName == "TEXTAREA" || e.target.tagName == "INPUT") { if (k == "Escape") { nclose(); $("#authModal").classList.remove("on"); } return; }
   if ($("#nm").classList.contains("on")) { if (k == "Escape") nclose(); return; }
+  if ($("#authModal").classList.contains("on")) { if (k == "Escape") $("#authModal").classList.remove("on"); return; }
   if (k == "t" || k == "T" || k == "е" || k == "Е") theme();
   else if (k == "j" || k == "J" || k == "о" || k == "О") jazz();
   else if (k == "a" || k == "A" || k == "ф" || k == "Ф") setLite();
@@ -753,6 +792,201 @@ $("#ins").onclick = $("#dlb").onclick = function() {
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(function(){});
 
 buildMenu(); cmd(); slam(); tickNow();
+</script>
+
+<!-- ПОДКЛЮЧЕНИЕ FIREBASE SDK БЕЗ ПЕРЕБИВАНИЯ ОСНОВНОЙ ЛОГИКИ -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+  import { 
+    getAuth, 
+    signInWithEmailAndPassword, 
+    createUserWithEmailAndPassword, 
+    signOut, 
+    onAuthStateChanged 
+  } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+  import { 
+    getFirestore, 
+    doc, 
+    setDoc, 
+    getDoc 
+  } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+  import { 
+    getStorage, 
+    ref, 
+    uploadBytes, 
+    getDownloadURL 
+  } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-storage.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAuNx-O3w44VNs0ipgHX332SjFbaLQrnzU",
+    authDomain: "p3r-schedule.firebaseapp.com",
+    projectId: "p3r-schedule",
+    storageBucket: "p3r-schedule.firebasestorage.app",
+    messagingSenderId: "793286163495",
+    appId: "1:793286163495:web:73f7be03d2aae507f92202",
+    measurementId: "G-2NEWFVC5WB"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+
+  const defaultAvatars = {
+    p3: ["p3_makoto", "p3_yukari", "p3_junpei", "p3_akihiko", "p3_aegis"],
+    p4: ["p4_yu", "p4_yosuke", "p4_chie", "p4_yukiko", "p4_teddie"],
+    p5: ["p5_joker", "p5_morgana", "p5_ryuji", "p5_ann", "p5_makoto"]
+  };
+
+  let currentUser = null;
+  let selectedAvatar = "avatars/p3_makoto.png";
+  let customFile = null;
+
+  // Синхронизация заметок с Firestore
+  window.syncNotesToFirebase = async function(notesObj) {
+    if (!currentUser) return;
+    try {
+      await setDoc(doc(db, "users", currentUser.uid), { notes: notesObj }, { merge: true });
+    } catch(e) {}
+  };
+
+  // Следим за состоянием входа
+  onAuthStateChanged(auth, async (user) => {
+    currentUser = user;
+    const btn = document.getElementById("authBtn");
+    if (!btn) return;
+
+    if (user) {
+      try {
+        const uSnap = await getDoc(doc(db, "users", user.uid));
+        const uData = uSnap.exists() ? uSnap.data() : null;
+        const ava = uData?.avatarUrl || "icon.png";
+        const name = uData?.displayName || user.email.split("@")[0];
+
+        btn.innerHTML = `<img src="${ava}" onerror="this.src='icon.png'"><span>${name}</span>`;
+        btn.onclick = () => {
+          sfx("ok");
+          if (confirm(`Расторгнуть контракт и выйти из профиля [${name}]?`)) {
+            signOut(auth);
+          }
+        };
+
+        // Загрузка сохранённых заметок из облака
+        if (uData && uData.notes) {
+          NOTES = Object.assign(NOTES, uData.notes);
+          try { localStorage.notes = JSON.stringify(NOTES); } catch(e) {}
+          nrefresh();
+        }
+      } catch(e) {}
+    } else {
+      btn.innerHTML = `<span>КОНТРАКТ</span>`;
+      btn.onclick = () => {
+        sfx("ok");
+        openAuth("register");
+      };
+    }
+  });
+
+  function openAuth(mode) {
+    const modal = document.getElementById("authModal");
+    const box = document.getElementById("authBox");
+    const isReg = mode === "register";
+
+    box.innerHTML = `
+      <div class="auth-ttl">${isReg ? "Velvet Contract" : "Awakening"}</div>
+      <div class="auth-sub">${isReg ? "Подтверждаешь ли ты принятие ответственности за свои решения?" : "Введи почту и пароль для входа в систему."}</div>
+      <form id="fAuth">
+        ${isReg ? `
+          <div class="auth-fld"><label>Имя / Позывной</label><input type="text" id="aName" required placeholder="Makoto"></div>
+        ` : ""}
+        <div class="auth-fld"><label>Почта</label><input type="email" id="aMail" required placeholder="student@8m.class"></div>
+        <div class="auth-fld"><label>Пароль</label><input type="password" id="aPass" required placeholder="••••••••"></div>
+
+        ${isReg ? `
+          <div class="auth-sec">Persona 3 Reload</div>
+          <div class="auth-grid">
+            ${defaultAvatars.p3.map(a => `<img class="auth-ava ${a === 'p3_makoto' ? 'sel' : ''}" src="avatars/${a}.png" data-path="avatars/${a}.png" onerror="this.src='icon.png'">`).join("")}
+          </div>
+          <div class="auth-sec">Persona 4 Golden</div>
+          <div class="auth-grid">
+            ${defaultAvatars.p4.map(a => `<img class="auth-ava" src="avatars/${a}.png" data-path="avatars/${a}.png" onerror="this.src='icon.png'">`).join("")}
+          </div>
+          <div class="auth-sec">Persona 5 Royal</div>
+          <div class="auth-grid">
+            ${defaultAvatars.p5.map(a => `<img class="auth-ava" src="avatars/${a}.png" data-path="avatars/${a}.png" onerror="this.src='icon.png'">`).join("")}
+          </div>
+          <div class="auth-fld" style="margin-top:6px">
+            <label>Или загрузить свой файл аватара</label>
+            <input type="file" id="aFile" accept="image/*">
+          </div>
+        ` : ""}
+
+        <button type="submit" class="auth-sub-btn">${isReg ? "Подписать контракт" : "Пробудить силу"}</button>
+      </form>
+      <button class="auth-tgl" id="aTgl">${isReg ? "Уже есть контракт? Войти" : "Нет аккаунта? Заключить контракт"}</button>
+      <button class="auth-tgl" style="color:#e8141c" id="aClose">✕ Закрыть</button>
+    `;
+
+    box.querySelectorAll(".auth-ava").forEach(img => {
+      img.onclick = () => {
+        sfx("tick");
+        box.querySelectorAll(".auth-ava").forEach(x => x.classList.remove("sel"));
+        img.classList.add("sel");
+        selectedAvatar = img.dataset.path;
+        customFile = null;
+      };
+    });
+
+    const fileInp = box.querySelector("#aFile");
+    if (fileInp) {
+      fileInp.onchange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+          customFile = e.target.files[0];
+          box.querySelectorAll(".auth-ava").forEach(x => x.classList.remove("sel"));
+        }
+      };
+    }
+
+    box.querySelector("#aTgl").onclick = () => { sfx("tick"); openAuth(isReg ? "login" : "register"); };
+    box.querySelector("#aClose").onclick = () => { sfx("tick"); modal.classList.remove("on"); };
+
+    box.querySelector("#fAuth").onsubmit = async (e) => {
+      e.preventDefault();
+      sfx("ok");
+      const email = box.querySelector("#aMail").value.trim();
+      const pass = box.querySelector("#aPass").value.trim();
+
+      try {
+        if (isReg) {
+          const name = box.querySelector("#aName").value.trim();
+          const cred = await createUserWithEmailAndPassword(auth, email, pass);
+          let avatarUrl = selectedAvatar;
+
+          if (customFile) {
+            const fileRef = ref(storage, `avatars/${cred.user.uid}_${Date.now()}`);
+            const up = await uploadBytes(fileRef, customFile);
+            avatarUrl = await getDownloadURL(up.ref);
+          }
+
+          await setDoc(doc(db, "users", cred.user.uid), {
+            displayName: name,
+            email: email,
+            avatarUrl: avatarUrl,
+            notes: NOTES,
+            createdAt: new Date().toISOString()
+          });
+        } else {
+          await signInWithEmailAndPassword(auth, email, pass);
+        }
+        modal.classList.remove("on");
+        toast("Контракт активирован ✓");
+      } catch(err) {
+        alert("Ошибка Бархатной комнаты: " + err.message);
+      }
+    };
+
+    modal.classList.add("on");
+  }
 </script>
 </body>
 </html>
