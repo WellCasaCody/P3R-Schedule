@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.png" type="image/png"><meta name="theme-color" content="#0b3cff"><meta name="apple-mobile-web-app-capable" content="yes"><title>Расписание 8М</title>
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="Icon.PNG" type="image/png"><meta name="theme-color" content="#0b3cff"><meta name="apple-mobile-web-app-capable" content="yes"><title>Расписание 8М</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,700;1,900&family=Russo+One&family=Rubik:ital,wght@0,900&family=Oswald:wght@700&family=Playfair+Display:wght@900&display=swap" rel="stylesheet">
 <style>
 :root{--bg1:#0a12b0;--bg2:#0b3cff;--bg3:#18c4ff;--acc:#22d3ff;--hi:#e8141c;--ink:#fff}
@@ -250,10 +250,8 @@ body.p4 .auth-ava.sel{border-color:#ffd400;box-shadow:0 0 8px #ffd400}
 
 <div class="now"><span class="cd" id="cd"></span><span class="ct" id="ct"></span></div>
 
-<!-- МОДАЛКА ЗАМЕТОК -->
 <div id="nm"><div class="nb"><b id="nt0"></b><textarea id="nta" maxlength="200" placeholder="Заметка: дз, что принести…"></textarea><div class="nr"><button id="nsv">Сохранить</button><button id="ndl">Удалить</button><button id="ncl">✕</button></div></div></div>
 
-<!-- МОДАЛКА РЕДАКТИРОВАНИЯ РАСПИСАНИЯ -->
 <div id="schedModal" style="position:fixed;inset:0;z-index:140;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(5px)">
   <div class="nb" style="width:min(95vw,600px)">
     <b>Настройка расписания класса</b>
@@ -270,7 +268,6 @@ body.p4 .auth-ava.sel{border-color:#ffd400;box-shadow:0 0 8px #ffd400}
 <div class="hint">↑↓<b>выбор</b> Enter<b>ок</b> Esc<b>назад</b> T<b>тема</b> J<b>lofi</b> A<b>анимации</b></div>
 <div id="wipe"></div>
 
-<!-- МОДАЛКА ПРОФИЛЯ / ВХОДА -->
 <div id="authModal"><div class="auth-box" id="authBox"></div></div>
 
 <script>
@@ -746,7 +743,7 @@ function tickNow() {
 }
 setInterval(tickNow, 1000);
 
-/* LOFI ПОЛНОЦЕННЫЙ WEB-AUDIO ГЕНЕРАТОР */
+/* LOFI WEB-AUDIO */
 var AC, master, on = false, timer, step = 0, nextT = 0, BPM = 74;
 var CH = [[53, 57, 60, 64], [52, 55, 59, 62], [50, 53, 57, 60], [48, 52, 55, 59]];
 var BS = [41, 40, 38, 36], SC = [65, 67, 69, 72, 74, 76, 77];
@@ -878,7 +875,7 @@ if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catc
 buildMenu(); cmd(); slam(); tickNow();
 </script>
 
-<!-- ПОДКЛЮЧЕНИЕ FIREBASE SDK С ВЕРИФИКАЦИЕЙ, GOOGLE, APPLE И КАСТОМНЫМ РАСПИСАНИЕМ -->
+<!-- МОДУЛЬ FIREBASE: ВХОД, GOOGLE, APPLE, ВЕРИФИКАЦИЯ, АВАТАРКИ -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
   import { 
@@ -930,10 +927,9 @@ buildMenu(); cmd(); slam(); tickNow();
   };
 
   let currentUser = null;
-  let selectedAvatar = "avatars/p3_makoto.png";
+  let selectedAvatar = "p3_makoto.PNG";
   let customFile = null;
 
-  // Облачная синхронизация заметок
   window.syncNotesToFirebase = async function(notesObj) {
     if (!currentUser || !currentUser.emailVerified) return;
     try {
@@ -941,7 +937,6 @@ buildMenu(); cmd(); slam(); tickNow();
     } catch(e) {}
   };
 
-  // Облачная синхронизация кастомного расписания
   window.syncScheduleToFirebase = async function(schedObj) {
     if (!currentUser || !currentUser.emailVerified) return;
     try {
@@ -949,7 +944,6 @@ buildMenu(); cmd(); slam(); tickNow();
     } catch(e) {}
   };
 
-  // Слушатель состояния авторизации
   onAuthStateChanged(auth, async (user) => {
     const btn = document.getElementById("authBtn");
     if (!btn) return;
@@ -959,10 +953,10 @@ buildMenu(); cmd(); slam(); tickNow();
       try {
         const uSnap = await getDoc(doc(db, "users", user.uid));
         const uData = uSnap.exists() ? uSnap.data() : null;
-        const ava = uData?.avatarUrl || user.photoURL || "icon.png";
+        const ava = uData?.avatarUrl || user.photoURL || "Icon.PNG";
         const name = uData?.displayName || user.displayName || user.email.split("@")[0];
 
-        btn.innerHTML = `<img src="${ava}" onerror="this.src='icon.png'"><span>${name}</span>`;
+        btn.innerHTML = `<img src="${ava}" onerror="this.src='Icon.PNG'"><span>${name}</span>`;
         btn.onclick = () => {
           sfx("ok");
           if (confirm(`Выйти из профиля [${name}]?`)) {
@@ -970,14 +964,12 @@ buildMenu(); cmd(); slam(); tickNow();
           }
         };
 
-        // Загружаем облачные заметки
         if (uData && uData.notes) {
           NOTES = Object.assign(NOTES, uData.notes);
           try { localStorage.notes = JSON.stringify(NOTES); } catch(e) {}
           nrefresh();
         }
 
-        // Загружаем облачное расписание, если пользователь сохранял своё
         if (uData && uData.customSchedule) {
           S = uData.customSchedule;
           try { localStorage.customSchedule = JSON.stringify(S); } catch(e) {}
@@ -995,6 +987,14 @@ buildMenu(); cmd(); slam(); tickNow();
       };
     }
   });
+
+  // Автоматический перебор путей к аватаркам (avatars/ и корень, .png и .PNG)
+  function renderAvatarItem(name, isSelected) {
+    return `<img class="auth-ava ${isSelected ? 'sel' : ''}" 
+                 src="avatars/${name}.png" 
+                 data-path="avatars/${name}.png" 
+                 onerror="if(!this.dataset.s){this.dataset.s=1;this.src='avatars/${name}.PNG';this.dataset.path='avatars/${name}.PNG';}else if(this.dataset.s==1){this.dataset.s=2;this.src='${name}.PNG';this.dataset.path='${name}.PNG';}else if(this.dataset.s==2){this.dataset.s=3;this.src='${name}.png';this.dataset.path='${name}.png';}else{this.src='Icon.PNG';}">`;
+  }
 
   function openAuth(mode) {
     const modal = document.getElementById("authModal");
@@ -1024,15 +1024,15 @@ buildMenu(); cmd(); slam(); tickNow();
         ${isReg ? `
           <div class="auth-sec">Выбери аватар: Persona 3</div>
           <div class="auth-grid">
-            ${defaultAvatars.p3.map(a => `<img class="auth-ava ${a === 'p3_makoto' ? 'sel' : ''}" src="avatars/${a}.png" data-path="avatars/${a}.png" onerror="this.src='icon.png'">`).join("")}
+            ${defaultAvatars.p3.map(a => renderAvatarItem(a, a === 'p3_makoto')).join("")}
           </div>
           <div class="auth-sec">Persona 4</div>
           <div class="auth-grid">
-            ${defaultAvatars.p4.map(a => `<img class="auth-ava" src="avatars/${a}.png" data-path="avatars/${a}.png" onerror="this.src='icon.png'">`).join("")}
+            ${defaultAvatars.p4.map(a => renderAvatarItem(a, false)).join("")}
           </div>
           <div class="auth-sec">Persona 5</div>
           <div class="auth-grid">
-            ${defaultAvatars.p5.map(a => `<img class="auth-ava" src="avatars/${a}.png" data-path="avatars/${a}.png" onerror="this.src='icon.png'">`).join("")}
+            ${defaultAvatars.p5.map(a => renderAvatarItem(a, false)).join("")}
           </div>
           <div class="auth-fld" style="margin-top:6px">
             <label>Или загрузи свой файл</label>
@@ -1046,7 +1046,6 @@ buildMenu(); cmd(); slam(); tickNow();
       <button class="auth-tgl" style="color:#e8141c" id="aClose">✕ Закрыть</button>
     `;
 
-    // Быстрый вход Google
     box.querySelector("#btnGoogleLogin").onclick = async () => {
       sfx("ok");
       try {
@@ -1064,7 +1063,6 @@ buildMenu(); cmd(); slam(); tickNow();
       }
     };
 
-    // Быстрый вход Apple ID
     box.querySelector("#btnAppleLogin").onclick = async () => {
       sfx("ok");
       try {
@@ -1081,13 +1079,12 @@ buildMenu(); cmd(); slam(); tickNow();
       }
     };
 
-    // Выбор аватара
     box.querySelectorAll(".auth-ava").forEach(img => {
       img.onclick = () => {
         sfx("tick");
         box.querySelectorAll(".auth-ava").forEach(x => x.classList.remove("sel"));
         img.classList.add("sel");
-        selectedAvatar = img.dataset.path;
+        selectedAvatar = img.dataset.path || img.src;
         customFile = null;
       };
     });
