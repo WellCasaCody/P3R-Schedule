@@ -34,7 +34,7 @@ body.p5 .plate{background:#fff;color:#000;border-color:#000;box-shadow:5px 5px 0
 .ic button:hover{rotate:20deg}.ic button.off{opacity:.5;text-decoration:line-through}
 body.p5 .ic button{border-color:var(--hi);box-shadow:3px 3px 0 var(--hi)}
 
-/* КНОПКА КОНТРАКТА В ШАПКЕ */
+/* КНОПКА ПРОФИЛЯ В ШАПКЕ */
 #authBtn{width:auto;border-radius:0;padding:4px 12px;font-family:'Montserrat',sans-serif;font-size:.8rem;font-weight:900;transform:skewX(-10deg);display:flex;align-items:center;gap:6px;box-shadow:3px 3px 0 var(--hi)}
 #authBtn:hover{rotate:0deg;scale:1.05}
 #authBtn img{width:22px;height:22px;border-radius:50%;object-fit:cover;border:1px solid #fff}
@@ -148,8 +148,8 @@ body.lite *,body.lite *::before,body.lite *::after{animation:none!important;tran
 body.lite #bub,body.lite .bg::before{display:none}body.lite .bg{filter:none}
 textarea{-webkit-user-select:text;user-select:text}
 
-/* МОДАЛЬНОЕ ОКНО FIREBASE (VELVET ROOM) */
-#authModal{position:fixed;inset:0;z-index:150;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(5px)}
+/* МОДАЛЬНОЕ ОКНО ПРОФИЛЯ */
+#authModal{position:fixed;inset:0;z-index:150;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(6px)}
 #authModal.on{display:flex}
 .auth-box{background:#020617;border:3px solid var(--acc);padding:20px;width:min(95vw,440px);max-height:90vh;overflow-y:auto;transform:skewX(-4deg);box-shadow:0 0 25px rgba(0,0,0,.8);position:relative}
 body.p5 .auth-box{background:#111;border-color:var(--hi);box-shadow:6px 6px 0 var(--hi)}
@@ -167,6 +167,8 @@ body.p5 .auth-ttl{color:var(--hi)} body.p4 .auth-ttl{color:#ffd400}
 .auth-ava.sel{border-color:var(--hi);box-shadow:0 0 8px var(--hi);scale:1.05}
 body.p4 .auth-ava.sel{border-color:#ffd400;box-shadow:0 0 8px #ffd400}
 .auth-sub-btn{width:100%;background:var(--hi);color:#fff;padding:10px;font-family:'Russo One';font-size:.95rem;text-transform:uppercase;margin-top:10px;box-shadow:3px 3px 0 #000}
+.auth-oauth{display:flex;gap:8px;margin-top:10px}
+.auth-oauth button{flex:1;background:#fff;color:#000;padding:8px 4px;font-family:'Russo One';font-size:.8rem;transform:skewX(-6deg);border:2px solid #000;box-shadow:2px 2px 0 var(--hi)}
 .auth-tgl{background:none;color:#aaa;text-decoration:underline;font-size:.8rem;margin-top:8px;width:100%;text-align:center}
 
 @media(max-width:720px){
@@ -191,9 +193,9 @@ body.p4 .auth-ava.sel{border-color:#ffd400;box-shadow:0 0 8px #ffd400}
 <div class="ghost" id="ghost">Меню</div>
 
 <header class="bar">
-  <div class="plate"><span>8М КЛАСС</span></div>
+  <div class="plate"><span id="headerTitle">8М КЛАСС</span></div>
   <div class="ic">
-    <button id="authBtn"><span>КОНТРАКТ</span></button>
+    <button id="authBtn"><span>ВОЙТИ</span></button>
     <button id="thm" aria-label="Тема (T)">◐</button>
     <button id="ins" style="display:none" aria-label="Установить">⤓</button>
     <button id="sfb" class="off" aria-label="Звуки интерфейса">♬</button>
@@ -232,23 +234,47 @@ body.p4 .auth-ava.sel{border-color:#ffd400;box-shadow:0 0 8px #ffd400}
 </div></section>
 
 <section class="scr" id="m-about"><div class="box">
-  <div class="ttl"><span>Класс</span></div>
-  <div class="card p"><span>Класс</span><small>8М</small></div>
-  <div class="card p"><span>Интерфейс</span><small>Persona 3 Reload & P5R GUI</small></div>
+  <div class="ttl"><span>Класс и настройки</span></div>
+  <div class="card p"><span id="aboutClassName">Класс: 8М</span><small id="aboutScheduleType">Базовое школьное расписание</small></div>
+  
+  <div class="dn" style="margin-top:14px">Управление расписанием</div>
+  <ul class="pn">
+    <li style="--n:0" id="btnEditSchedule"><span>✎ Изменить / Загрузить своё расписание (JSON)</span></li>
+    <li style="--n:1" id="btnExportSchedule"><span>⎘ Экспортировать текущее расписание в буфер</span></li>
+    <li style="--n:2" id="btnResetSchedule"><span>↺ Сбросить к стандартному расписанию 8М</span></li>
+  </ul>
+  
+  <div class="card p" style="margin-top:12px"><span>Интерфейс</span><small>Persona 3 Reload & P5R GUI Engine</small></div>
   <button class="back" data-back>◄ Назад</button>
 </div></section>
 
 <div class="now"><span class="cd" id="cd"></span><span class="ct" id="ct"></span></div>
+
+<!-- МОДАЛКА ЗАМЕТОК -->
 <div id="nm"><div class="nb"><b id="nt0"></b><textarea id="nta" maxlength="200" placeholder="Заметка: дз, что принести…"></textarea><div class="nr"><button id="nsv">Сохранить</button><button id="ndl">Удалить</button><button id="ncl">✕</button></div></div></div>
+
+<!-- МОДАЛКА РЕДАКТИРОВАНИЯ РАСПИСАНИЯ -->
+<div id="schedModal" style="position:fixed;inset:0;z-index:140;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(5px)">
+  <div class="nb" style="width:min(95vw,600px)">
+    <b>Настройка расписания класса</b>
+    <p style="font-size:.78rem;color:#ccc;margin-bottom:8px">Вставь готовый JSON другого класса или отредактируй уроки под свой класс:</p>
+    <textarea id="schedJsonArea" style="height:220px;font-family:monospace;font-size:.8rem"></textarea>
+    <div class="nr">
+      <button id="schedSaveBtn" style="background:var(--hi);color:#fff">Применить</button>
+      <button id="schedCloseBtn">✕ Отмена</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 <div class="hint">↑↓<b>выбор</b> Enter<b>ок</b> Esc<b>назад</b> T<b>тема</b> J<b>lofi</b> A<b>анимации</b></div>
 <div id="wipe"></div>
 
-<!-- МОДАЛКА VELVET ROOM FIREBASE -->
+<!-- МОДАЛКА ПРОФИЛЯ / ВХОДА -->
 <div id="authModal"><div class="auth-box" id="authBox"></div></div>
 
 <script>
-var S = [
+var DEFAULT_SCHEDULE = [
   ["Понедельник", [
     ["09:00", "09:45", "Ров", "каб. 46", "a"],
     ["09:55", "10:40", "Алгебра", "каб. 46", "a"],
@@ -294,6 +320,13 @@ var S = [
     ["14:55", "15:40", "ОБЗР", "каб. 6", "a"]
   ]]
 ];
+
+var S = DEFAULT_SCHEDULE;
+try {
+  if (localStorage.customSchedule) {
+    S = JSON.parse(localStorage.customSchedule);
+  }
+} catch(e) {}
 
 var MENU = [
   ["Сегодня", "m-today"],
@@ -429,7 +462,8 @@ function wipe(cb) {
 }
 
 function go(d) {
-  var n = (di + d + 5) % 5, dir = d > 0 ? 1 : -1, ls = $("#ls");
+  var count = S.length || 5;
+  var n = (di + d + count) % count, dir = d > 0 ? 1 : -1, ls = $("#ls");
   if (!d) return;
   if (lite) { di = n; draw(); return; }
   ls.animate([{translate: "0", opacity: 1}, {translate: -dir * 90 + "px 0", opacity: 0}], {duration: 160, easing: "ease-in"}).onfinish = function() {
@@ -463,7 +497,7 @@ addEventListener("pointerup", function(e) {
   var hint = document.createElement("div"); hint.className = "swh"; document.body.appendChild(hint);
   function clr() { gh.style.marginLeft = ""; dy.style.translate = ""; document.querySelectorAll("#dy .nx").forEach(function(b) { b.classList.remove("nx"); }); }
   addEventListener("pointerdown", function(e) {
-    if (cur != "m-sched" || e.target.closest("#dy,.back,#nm,#authModal")) return;
+    if (cur != "m-sched" || e.target.closest("#dy,.back,#nm,#authModal,#schedModal")) return;
     if (e.pointerType == "mouse" && e.button) return;
     sx = e.clientX; sy = e.clientY; dx = 0; dn = true; lock = 0; pv = null;
   });
@@ -473,10 +507,11 @@ addEventListener("pointerup", function(e) {
     if (!lock && (Math.abs(dx) > 10 || Math.abs(y) > 10)) lock = Math.abs(dx) > Math.abs(y) * 1.2 ? 1 : 2;
     if (lock != 1 || lite) return;
     var dir = dx < 0 ? 1 : -1, k = Math.max(-1, Math.min(1, dx / 160)), ax = Math.abs(k);
+    var count = S.length || 5;
     if (!pv || pd != dir) {
-      if (pv) pv.remove(); tg = (di + (dir > 0 ? 1 : 4)) % 5; pd = dir; W = ls.offsetWidth + 60;
+      if (pv) pv.remove(); tg = (di + (dir > 0 ? 1 : count - 1)) % count; pd = dir; W = ls.offsetWidth + 60;
       pv = document.createElement("div"); pv.className = "pv"; pv.innerHTML = '<div class="dn">' + S[tg][0] + '</div>' + lhtml(tg); pv.style.translate = dir * W + "px 0"; ls.appendChild(pv);
-      document.querySelectorAll("#dy .nx").forEach(function(b) { b.classList.remove("nx"); }); dy.children[tg].classList.add("nx");
+      document.querySelectorAll("#dy .nx").forEach(function(b) { b.classList.remove("nx"); }); if (dy.children[tg]) dy.children[tg].classList.add("nx");
     }
     ls.style.translate = dx + "px 0"; ls.style.rotate = (k * 2.5) + "deg";
     dy.style.translate = (dx * .3) + "px 0"; gh.style.marginLeft = (dx * .4) + "px";
@@ -525,6 +560,7 @@ function isLive(i, l) {
   var m = n.getHours() * 60 + n.getMinutes(); return m >= mn(l[0]) && m < mn(l[1]);
 }
 function rows(i, live) {
+  if (!S[i]) return "";
   var L = S[i][1], h = "";
   L.forEach(function(l, n) {
     var k = i + "|" + l[0] + "|" + l[2], lv = live && isLive(i, l);
@@ -535,7 +571,7 @@ function rows(i, live) {
 
 function status() {
   var n = new Date(), i = tIdx(n), k, l, d;
-  if (i < 0) return ["Выходной", "Уроков нет — отдыхай"];
+  if (i < 0 || !S[i]) return ["Выходной", "Уроков нет — отдыхай"];
   var m = n.getHours() * 60 + n.getMinutes(), L = S[i][1];
   for (k = 0; k < L.length; k++) {
     l = L[k]; if (m >= mn(l[0]) && m < mn(l[1])) return ["СЕЙЧАС: " + l[2], "до конца " + (mn(l[1]) - m) + " мин" + (l[3] ? " · " + l[3] : "")];
@@ -553,10 +589,10 @@ function updToday(force) {
   if (force || st[0] != lastT) {
     lastT = st[0];
     var i = tIdx(n), t = new Date(n.getTime() + 864e5), j = tIdx(t), E = '<div class="card p"><span>Выходной 🎉</span></div>';
-    $("#tdn").textContent = i < 0 ? "Сегодня — выходной" : "Сегодня — " + S[i][0];
-    $("#td").innerHTML = i < 0 ? E : rows(i, true);
-    $("#tmn").textContent = j < 0 ? "Завтра — выходной" : "Завтра — " + S[j][0];
-    $("#tm").innerHTML = j < 0 ? E : rows(j, false);
+    $("#tdn").textContent = (i < 0 || !S[i]) ? "Сегодня — выходной" : "Сегодня — " + S[i][0];
+    $("#td").innerHTML = (i < 0 || !S[i]) ? E : rows(i, true);
+    $("#tmn").textContent = (j < 0 || !S[j]) ? "Завтра — выходной" : "Завтра — " + S[j][0];
+    $("#tm").innerHTML = (j < 0 || !S[j]) ? E : rows(j, false);
   }
 }
 
@@ -583,16 +619,60 @@ document.addEventListener("click", function(e) {
 function toast(m) { var e = $("#toast"); e.textContent = m; e.classList.add("on"); clearTimeout(e._t); e._t = setTimeout(function() { e.classList.remove("on"); }, 1800); }
 
 function shareDay(i) {
+  if (!S[i]) return;
   var L = S[i][1], t = S[i][0] + " (8М)\n" + L.map(function(l) {
     var n = NOTES[i + "|" + l[0] + "|" + l[2]];
     return l[0] + "–" + l[1] + " " + l[2] + (l[3] ? " [" + l[3] + "]" : "") + (n ? " 📝 " + n : "");
-  }).join("\n") + "\n— Расписание 8М";
+  }).join("\n") + "\n— Расписание";
   if (navigator.share) navigator.share({text: t}).catch(function() {});
   else if (navigator.clipboard) navigator.clipboard.writeText(t).then(function() { toast("Скопировано ✓"); });
 }
 
 $("#shS").onclick = function() { shareDay(di); };
 $("#shT").onclick = function() { var n = new Date(), i = tIdx(n); if (i < 0) { toast("Сегодня выходной"); return; } shareDay(i); };
+
+/* УПРАВЛЕНИЕ КАСТОМНЫМ РАСПИСАНИЕМ */
+$("#btnEditSchedule").onclick = function() {
+  sfx("ok");
+  $("#schedJsonArea").value = JSON.stringify(S, null, 2);
+  $("#schedModal").style.display = "flex";
+};
+$("#schedCloseBtn").onclick = function() { sfx("tick"); $("#schedModal").style.display = "none"; };
+$("#schedSaveBtn").onclick = function() {
+  try {
+    var parsed = JSON.parse($("#schedJsonArea").value.trim());
+    if (!Array.isArray(parsed) || !parsed.length) throw new Error("Неверный формат расписания");
+    S = parsed;
+    localStorage.customSchedule = JSON.stringify(S);
+    if (window.syncScheduleToFirebase) window.syncScheduleToFirebase(S);
+    $("#schedModal").style.display = "none";
+    $("#aboutScheduleType").textContent = "Используется собственное расписание";
+    toast("Расписание обновлено ✓");
+    draw(); updToday(true);
+  } catch(e) {
+    alert("Ошибка парсинга JSON: " + e.message);
+  }
+};
+$("#btnExportSchedule").onclick = function() {
+  sfx("ok");
+  var code = JSON.stringify(S);
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(code).then(function() { toast("JSON скопирован в буфер ✓"); });
+  } else {
+    prompt("Скопируй JSON-код своего расписания:", code);
+  }
+};
+$("#btnResetSchedule").onclick = function() {
+  sfx("ok");
+  if (confirm("Сбросить расписание к стандартному 8М?")) {
+    S = DEFAULT_SCHEDULE;
+    delete localStorage.customSchedule;
+    if (window.syncScheduleToFirebase) window.syncScheduleToFirebase(null);
+    $("#aboutScheduleType").textContent = "Базовое школьное расписание";
+    toast("Расписание сброшено к 8М ✓");
+    draw(); updToday(true);
+  }
+};
 
 /* ТЕМНЫЙ ЧАС И ШТОРКИ */
 var busy = false;
@@ -762,9 +842,13 @@ for (var i = 0; i < 40; i++) B.push({x: Math.random(), y: Math.random(), r: 2 + 
 /* КЛАВИАТУРА */
 document.addEventListener("keydown", function(e) {
   var k = e.key;
-  if (e.target.tagName == "TEXTAREA" || e.target.tagName == "INPUT") { if (k == "Escape") { nclose(); $("#authModal").classList.remove("on"); } return; }
+  if (e.target.tagName == "TEXTAREA" || e.target.tagName == "INPUT") {
+    if (k == "Escape") { nclose(); $("#authModal").classList.remove("on"); $("#schedModal").style.display = "none"; }
+    return;
+  }
   if ($("#nm").classList.contains("on")) { if (k == "Escape") nclose(); return; }
   if ($("#authModal").classList.contains("on")) { if (k == "Escape") $("#authModal").classList.remove("on"); return; }
+  if ($("#schedModal").style.display == "flex") { if (k == "Escape") $("#schedModal").style.display = "none"; return; }
   if (k == "t" || k == "T" || k == "е" || k == "Е") theme();
   else if (k == "j" || k == "J" || k == "о" || k == "О") jazz();
   else if (k == "a" || k == "A" || k == "ф" || k == "Ф") setLite();
@@ -794,13 +878,17 @@ if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catc
 buildMenu(); cmd(); slam(); tickNow();
 </script>
 
-<!-- ПОДКЛЮЧЕНИЕ FIREBASE SDK БЕЗ ПЕРЕБИВАНИЯ ОСНОВНОЙ ЛОГИКИ -->
+<!-- ПОДКЛЮЧЕНИЕ FIREBASE SDK С ВЕРИФИКАЦИЕЙ, GOOGLE, APPLE И КАСТОМНЫМ РАСПИСАНИЕМ -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
   import { 
     getAuth, 
     signInWithEmailAndPassword, 
     createUserWithEmailAndPassword, 
+    sendEmailVerification,
+    GoogleAuthProvider,
+    OAuthProvider,
+    signInWithPopup,
     signOut, 
     onAuthStateChanged 
   } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
@@ -832,6 +920,9 @@ buildMenu(); cmd(); slam(); tickNow();
   const db = getFirestore(app);
   const storage = getStorage(app);
 
+  const googleProvider = new GoogleAuthProvider();
+  const appleProvider = new OAuthProvider("apple.com");
+
   const defaultAvatars = {
     p3: ["p3_makoto", "p3_yukari", "p3_junpei", "p3_akihiko", "p3_aegis"],
     p4: ["p4_yu", "p4_yosuke", "p4_chie", "p4_yukiko", "p4_teddie"],
@@ -842,47 +933,65 @@ buildMenu(); cmd(); slam(); tickNow();
   let selectedAvatar = "avatars/p3_makoto.png";
   let customFile = null;
 
-  // Синхронизация заметок с Firestore
+  // Облачная синхронизация заметок
   window.syncNotesToFirebase = async function(notesObj) {
-    if (!currentUser) return;
+    if (!currentUser || !currentUser.emailVerified) return;
     try {
       await setDoc(doc(db, "users", currentUser.uid), { notes: notesObj }, { merge: true });
     } catch(e) {}
   };
 
-  // Следим за состоянием входа
+  // Облачная синхронизация кастомного расписания
+  window.syncScheduleToFirebase = async function(schedObj) {
+    if (!currentUser || !currentUser.emailVerified) return;
+    try {
+      await setDoc(doc(db, "users", currentUser.uid), { customSchedule: schedObj }, { merge: true });
+    } catch(e) {}
+  };
+
+  // Слушатель состояния авторизации
   onAuthStateChanged(auth, async (user) => {
-    currentUser = user;
     const btn = document.getElementById("authBtn");
     if (!btn) return;
 
-    if (user) {
+    if (user && user.emailVerified) {
+      currentUser = user;
       try {
         const uSnap = await getDoc(doc(db, "users", user.uid));
         const uData = uSnap.exists() ? uSnap.data() : null;
-        const ava = uData?.avatarUrl || "icon.png";
-        const name = uData?.displayName || user.email.split("@")[0];
+        const ava = uData?.avatarUrl || user.photoURL || "icon.png";
+        const name = uData?.displayName || user.displayName || user.email.split("@")[0];
 
         btn.innerHTML = `<img src="${ava}" onerror="this.src='icon.png'"><span>${name}</span>`;
         btn.onclick = () => {
           sfx("ok");
-          if (confirm(`Расторгнуть контракт и выйти из профиля [${name}]?`)) {
+          if (confirm(`Выйти из профиля [${name}]?`)) {
             signOut(auth);
           }
         };
 
-        // Загрузка сохранённых заметок из облака
+        // Загружаем облачные заметки
         if (uData && uData.notes) {
           NOTES = Object.assign(NOTES, uData.notes);
           try { localStorage.notes = JSON.stringify(NOTES); } catch(e) {}
           nrefresh();
         }
+
+        // Загружаем облачное расписание, если пользователь сохранял своё
+        if (uData && uData.customSchedule) {
+          S = uData.customSchedule;
+          try { localStorage.customSchedule = JSON.stringify(S); } catch(e) {}
+          const badge = document.getElementById("aboutScheduleType");
+          if (badge) badge.textContent = "Синхронизировано из облака";
+          draw(); updToday(true);
+        }
       } catch(e) {}
     } else {
-      btn.innerHTML = `<span>КОНТРАКТ</span>`;
+      currentUser = null;
+      btn.innerHTML = `<span>ВОЙТИ</span>`;
       btn.onclick = () => {
         sfx("ok");
-        openAuth("register");
+        openAuth("login");
       };
     }
   });
@@ -893,40 +1002,86 @@ buildMenu(); cmd(); slam(); tickNow();
     const isReg = mode === "register";
 
     box.innerHTML = `
-      <div class="auth-ttl">${isReg ? "Velvet Contract" : "Awakening"}</div>
-      <div class="auth-sub">${isReg ? "Подтверждаешь ли ты принятие ответственности за свои решения?" : "Введи почту и пароль для входа в систему."}</div>
+      <div class="auth-ttl">${isReg ? "Регистрация" : "Вход в профиль"}</div>
+      <div class="auth-sub">
+        ${isReg ? "Создай профиль ученика, чтобы сохранять свои заметки и расписание между устройствами." : "Войди в аккаунт для облачной синхронизации заметок и уроков."}
+      </div>
+
+      <div class="auth-oauth">
+        <button id="btnGoogleLogin">G Google</button>
+        <button id="btnAppleLogin"> Apple ID</button>
+      </div>
+
+      <div style="text-align:center;font-size:.7rem;color:#777;margin:10px 0">─── ИЛИ ЧЕРЕЗ EMAIL ───</div>
+
       <form id="fAuth">
         ${isReg ? `
-          <div class="auth-fld"><label>Имя / Позывной</label><input type="text" id="aName" required placeholder="Makoto"></div>
+          <div class="auth-fld"><label>Имя и фамилия</label><input type="text" id="aName" required placeholder="Например: Ваня Смирнов"></div>
         ` : ""}
-        <div class="auth-fld"><label>Почта</label><input type="email" id="aMail" required placeholder="student@8m.class"></div>
+        <div class="auth-fld"><label>Электронная почта</label><input type="email" id="aMail" required placeholder="name@mail.ru"></div>
         <div class="auth-fld"><label>Пароль</label><input type="password" id="aPass" required placeholder="••••••••"></div>
 
         ${isReg ? `
-          <div class="auth-sec">Persona 3 Reload</div>
+          <div class="auth-sec">Выбери аватар: Persona 3</div>
           <div class="auth-grid">
             ${defaultAvatars.p3.map(a => `<img class="auth-ava ${a === 'p3_makoto' ? 'sel' : ''}" src="avatars/${a}.png" data-path="avatars/${a}.png" onerror="this.src='icon.png'">`).join("")}
           </div>
-          <div class="auth-sec">Persona 4 Golden</div>
+          <div class="auth-sec">Persona 4</div>
           <div class="auth-grid">
             ${defaultAvatars.p4.map(a => `<img class="auth-ava" src="avatars/${a}.png" data-path="avatars/${a}.png" onerror="this.src='icon.png'">`).join("")}
           </div>
-          <div class="auth-sec">Persona 5 Royal</div>
+          <div class="auth-sec">Persona 5</div>
           <div class="auth-grid">
             ${defaultAvatars.p5.map(a => `<img class="auth-ava" src="avatars/${a}.png" data-path="avatars/${a}.png" onerror="this.src='icon.png'">`).join("")}
           </div>
           <div class="auth-fld" style="margin-top:6px">
-            <label>Или загрузить свой файл аватара</label>
+            <label>Или загрузи свой файл</label>
             <input type="file" id="aFile" accept="image/*">
           </div>
         ` : ""}
 
-        <button type="submit" class="auth-sub-btn">${isReg ? "Подписать контракт" : "Пробудить силу"}</button>
+        <button type="submit" class="auth-sub-btn">${isReg ? "Зарегистрироваться" : "Войти"}</button>
       </form>
-      <button class="auth-tgl" id="aTgl">${isReg ? "Уже есть контракт? Войти" : "Нет аккаунта? Заключить контракт"}</button>
+      <button class="auth-tgl" id="aTgl">${isReg ? "Уже есть аккаунт? Войти" : "Нет аккаунта? Зарегистрироваться"}</button>
       <button class="auth-tgl" style="color:#e8141c" id="aClose">✕ Закрыть</button>
     `;
 
+    // Быстрый вход Google
+    box.querySelector("#btnGoogleLogin").onclick = async () => {
+      sfx("ok");
+      try {
+        const res = await signInWithPopup(auth, googleProvider);
+        await setDoc(doc(db, "users", res.user.uid), {
+          displayName: res.user.displayName || "Ученик",
+          email: res.user.email,
+          avatarUrl: res.user.photoURL || selectedAvatar,
+          lastLogin: new Date().toISOString()
+        }, { merge: true });
+        modal.classList.remove("on");
+        toast("Вход через Google успешен ✓");
+      } catch(err) {
+        alert("Ошибка входа Google: " + err.message);
+      }
+    };
+
+    // Быстрый вход Apple ID
+    box.querySelector("#btnAppleLogin").onclick = async () => {
+      sfx("ok");
+      try {
+        const res = await signInWithPopup(auth, appleProvider);
+        await setDoc(doc(db, "users", res.user.uid), {
+          displayName: res.user.displayName || "Ученик Apple",
+          email: res.user.email,
+          lastLogin: new Date().toISOString()
+        }, { merge: true });
+        modal.classList.remove("on");
+        toast("Вход через Apple успешен ✓");
+      } catch(err) {
+        alert("Ошибка Apple ID: " + err.message);
+      }
+    };
+
+    // Выбор аватара
     box.querySelectorAll(".auth-ava").forEach(img => {
       img.onclick = () => {
         sfx("tick");
@@ -960,8 +1115,10 @@ buildMenu(); cmd(); slam(); tickNow();
         if (isReg) {
           const name = box.querySelector("#aName").value.trim();
           const cred = await createUserWithEmailAndPassword(auth, email, pass);
-          let avatarUrl = selectedAvatar;
+          
+          await sendEmailVerification(cred.user);
 
+          let avatarUrl = selectedAvatar;
           if (customFile) {
             const fileRef = ref(storage, `avatars/${cred.user.uid}_${Date.now()}`);
             const up = await uploadBytes(fileRef, customFile);
@@ -973,19 +1130,67 @@ buildMenu(); cmd(); slam(); tickNow();
             email: email,
             avatarUrl: avatarUrl,
             notes: NOTES,
+            customSchedule: localStorage.customSchedule ? JSON.parse(localStorage.customSchedule) : null,
             createdAt: new Date().toISOString()
           });
+
+          renderVerifyNotice(box, cred.user);
         } else {
-          await signInWithEmailAndPassword(auth, email, pass);
+          const cred = await signInWithEmailAndPassword(auth, email, pass);
+          if (!cred.user.emailVerified) {
+            renderVerifyNotice(box, cred.user);
+          } else {
+            modal.classList.remove("on");
+            toast("Вход выполнен ✓");
+          }
         }
-        modal.classList.remove("on");
-        toast("Контракт активирован ✓");
       } catch(err) {
-        alert("Ошибка Бархатной комнаты: " + err.message);
+        alert("Ошибка авторизации: " + err.message);
       }
     };
 
     modal.classList.add("on");
+  }
+
+  function renderVerifyNotice(container, user) {
+    container.innerHTML = `
+      <div class="auth-ttl">Подтверди почту</div>
+      <div class="auth-sub" style="line-height:1.4">
+        Мы отправили письмо со ссылкой активации на <b>${user.email}</b>.<br><br>
+        Перейди по ссылке из письма (проверь также папку «Спам») и нажми кнопку подтверждения ниже.
+      </div>
+      <button class="auth-sub-btn" id="btnCheckVerify">Я подтвердил(а) почту</button>
+      <button class="auth-tgl" id="btnResend">Отправить письмо повторно</button>
+      <button class="auth-tgl" style="color:#e8141c" id="btnSignOut">Выйти</button>
+    `;
+
+    container.querySelector("#btnCheckVerify").onclick = async () => {
+      sfx("ok");
+      await user.reload();
+      if (user.emailVerified) {
+        document.getElementById("authModal").classList.remove("on");
+        toast("Почта подтверждена! ✓");
+        location.reload();
+      } else {
+        alert("Почта ещё не подтверждена. Перейди по ссылке в письме!");
+      }
+    };
+
+    container.querySelector("#btnResend").onclick = async () => {
+      sfx("tick");
+      try {
+        await sendEmailVerification(user);
+        alert("Письмо отправлено повторно. Проверь свой ящик!");
+      } catch(e) {
+        alert("Не удалось отправить: " + e.message);
+      }
+    };
+
+    container.querySelector("#btnSignOut").onclick = async () => {
+      sfx("tick");
+      await signOut(auth);
+      openAuth("login");
+    };
   }
 </script>
 </body>
