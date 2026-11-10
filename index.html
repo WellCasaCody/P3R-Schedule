@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="Icon.PNG" type="image/png">
-<!-- Теги для iOS Safari PWA без костылей с цифрой 8 -->
 <link rel="apple-touch-icon" href="Icon.PNG">
 <link rel="apple-touch-icon" sizes="180x180" href="Icon.PNG">
 <meta name="theme-color" content="#0b3cff">
@@ -264,9 +263,9 @@ body.p4 .post-subj{background:#222;color:#ffd400}
   <button class="shr" id="shS">⇪ Поделиться днём</button><button class="back" data-back>◄ Назад</button>
 </div></section>
 
-<!-- ЭКРАН ТВИТТЕР-ЛЕНТЫ ДЗ -->
+<!-- ЭКРАН ЛЕНТЫ -->
 <section class="scr" id="m-feed"><div class="box">
-  <div class="ttl"><span>Лента заданий</span></div>
+  <div class="ttl"><span>Лента</span></div>
   
   <div id="feedCreateBox" class="feed-create" style="display:none">
     <select id="feedSubject">
@@ -342,7 +341,7 @@ body.p4 .post-subj{background:#222;color:#ffd400}
     <p style="font-size:.78rem;color:#ccc;margin-bottom:12px;font-style:normal">Управление доступом, выдача синих галочек верификации и назначение в Dev Team.</p>
     <div id="rootUserList">Загрузка базы пользователей...</div>
     <div style="margin-top:14px;display:flex;gap:8px">
-      <button class="shr" id="rootBindPasskey" style="margin:0;flex:1">Привязать Face ID / Touch ID</button>
+      <button class="shr" id="rootBindPasskey" style="margin:0;flex:1">Привязать Face ID / Windows Hello</button>
       <button class="back" id="rootCloseBtn" style="margin:0;flex:none">✕ Закрыть</button>
     </div>
   </div>
@@ -412,7 +411,7 @@ try {
 var MENU = [
   ["Сегодня", "m-today"],
   ["Расписание", "m-sched"],
-  ["Лента ДЗ", "m-feed"],
+  ["Лента", "m-feed"],
   ["Скачать", "m-dl"],
   ["Класс", "m-about"]
 ];
@@ -961,7 +960,7 @@ if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catc
 buildMenu(); cmd(); slam(); tickNow();
 </script>
 
-<!-- МОДУЛЬ FIREBASE: AUTH, ТЕНЕВОЙ ROOT, ПОДТВЕРЖДЕНИЕ ПОЧТЫ, WEBAUTHN, TWITTER-FEED -->
+<!-- МОДУЛЬ FIREBASE: AUTH, ROOT, WEBAUTHN, TWITTER-FEED -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
   import { 
@@ -1014,14 +1013,12 @@ buildMenu(); cmd(); slam(); tickNow();
   const googleProvider = new GoogleAuthProvider();
   const appleProvider = new OAuthProvider("apple.com");
 
-  // Автоматический перебор расширений и папок для аватарок
   const defaultAvatars = {
     p3: ["p3_makoto", "p3_yukari", "p3_junpei", "p3_akihiko", "p3_aegis"],
     p4: ["p4_yu", "p4_yosuke", "p4_chie", "p4_yukiko", "p4_teddie"],
     p5: ["p5_joker", "p5_morgana", "p5_ryuji", "p5_ann", "p5_makoto"]
   };
 
-  // Резервный мастер-PIN на случай разблокировки root
   const ROOT_FALLBACK_PIN = "883311";
 
   let currentUser = null;
@@ -1043,7 +1040,6 @@ buildMenu(); cmd(); slam(); tickNow();
     } catch(e) {}
   };
 
-  // Слушатель состояния авторизации
   onAuthStateChanged(auth, async (user) => {
     const btn = document.getElementById("authBtn");
     if (!btn) return;
@@ -1077,7 +1073,6 @@ buildMenu(); cmd(); slam(); tickNow();
         btn.innerHTML = `<img src="${ava}" onerror="this.src='Icon.PNG'"><span>${name}${vBadge}${dBadge}</span>`;
         btn.onclick = () => showProfileMenu(uData);
 
-        // Права на постинг в общую ленту ДЗ (только верифицированные, dev или root)
         const canPost = uData.role === "root" || uData.isVerified || (uData.badges && uData.badges.includes("dev"));
         const postBox = document.getElementById("feedCreateBox");
         if (postBox) postBox.style.display = canPost ? "block" : "none";
@@ -1108,7 +1103,6 @@ buildMenu(); cmd(); slam(); tickNow();
     }
   });
 
-  // Диалоговое окно профиля
   function showProfileMenu(data) {
     sfx("ok");
     const statusTxt = data.role === "root" ? "⚡ ROOT ADMINISTRATOR" : 
@@ -1135,7 +1129,6 @@ buildMenu(); cmd(); slam(); tickNow();
     }
   }
 
-  // Генератор карточек аватарок с фоллбеками на регистр .png / .PNG
   function renderAvatarItem(name, isSelected) {
     return `<img class="auth-ava ${isSelected ? 'sel' : ''}" 
                  src="avatars/${name}.png" 
@@ -1143,7 +1136,6 @@ buildMenu(); cmd(); slam(); tickNow();
                  onerror="if(!this.dataset.s){this.dataset.s=1;this.src='avatars/${name}.PNG';this.dataset.path='avatars/${name}.PNG';}else if(this.dataset.s==1){this.dataset.s=2;this.src='${name}.PNG';this.dataset.path='${name}.PNG';}else if(this.dataset.s==2){this.dataset.s=3;this.src='${name}.png';this.dataset.path='${name}.png';}else{this.src='Icon.PNG';}">`;
   }
 
-  // Модалка авторизации и регистрации
   function openAuth(mode) {
     const modal = document.getElementById("authModal");
     const box = document.getElementById("authBox");
@@ -1194,7 +1186,6 @@ buildMenu(); cmd(); slam(); tickNow();
       <button class="auth-tgl" style="color:#e8141c" id="aClose">✕ Закрыть</button>
     `;
 
-    // Вход через Google
     box.querySelector("#btnGoogleLogin").onclick = async () => {
       sfx("ok");
       try {
@@ -1219,7 +1210,6 @@ buildMenu(); cmd(); slam(); tickNow();
       }
     };
 
-    // Вход через Apple
     box.querySelector("#btnAppleLogin").onclick = async () => {
       sfx("ok");
       try {
@@ -1357,7 +1347,7 @@ buildMenu(); cmd(); slam(); tickNow();
     };
   }
 
-  // СЛУШАТЕЛЬ ЛЕНТЫ ДЗ В РЕАЛЬНОМ ВРЕМЕНИ
+  // СЛУШАТЕЛЬ ЛЕНТЫ
   const feedQuery = query(collection(db, "homework_feed"), orderBy("createdAt", "desc"));
   onSnapshot(feedQuery, (snap) => {
     const list = document.getElementById("feedList");
@@ -1392,7 +1382,7 @@ buildMenu(); cmd(); slam(); tickNow();
 
     list.querySelectorAll(".post-del").forEach(btn => {
       btn.onclick = async () => {
-        if (confirm("Удалить это задание из ленты?")) {
+        if (confirm("Удалить этот пост из ленты?")) {
           sfx("ok");
           await deleteDoc(doc(db, "homework_feed", btn.dataset.id));
           toast("Пост удален ✓");
@@ -1401,7 +1391,6 @@ buildMenu(); cmd(); slam(); tickNow();
     });
   });
 
-  // Публикация нового поста в ленту
   document.getElementById("feedSubmitBtn").onclick = async () => {
     if (!currentUser || !currentUser.emailVerified) {
       return alert("Для публикации нужно войти в подтверждённый аккаунт!");
@@ -1429,7 +1418,7 @@ buildMenu(); cmd(); slam(); tickNow();
     }
   };
 
-  // ТЕНЕВОЙ ROOT-ДОСТУП: КРИПТОКЛЮЧ WEBAUTHN + АВАРИЙНЫЙ PIN
+  // КРИПТОГРАФИЯ WEBAUTHN + МАСТЕР PIN
   const bufferToBase64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
   const base64ToBuffer = (b64) => Uint8Array.from(atob(b64), c => c.charCodeAt(0));
 
@@ -1441,7 +1430,6 @@ buildMenu(); cmd(); slam(); tickNow();
       clearTimeout(plateTimer);
       plateTimer = setTimeout(() => { plateTaps = 0; }, 1200);
 
-      // Тройной клик по плашке 8М КЛАСС
       if (plateTaps === 3) {
         plateTaps = 0;
         triggerRootUnlock();
@@ -1451,8 +1439,9 @@ buildMenu(); cmd(); slam(); tickNow();
 
   async function triggerRootUnlock() {
     sfx("clock");
-    
-    // Пробуем нативный Secure Enclave (Face ID / Windows Hello)
+    let hardwareOk = false;
+
+    // Пытаемся авторизоваться по биометрии / ключу девайса
     try {
       const lockSnap = await getDoc(doc(db, "root_security", "hardware_lock"));
       if (lockSnap.exists() && window.PublicKeyCredential) {
@@ -1463,14 +1452,16 @@ buildMenu(); cmd(); slam(); tickNow();
         const assertion = await navigator.credentials.get({
           publicKey: {
             challenge: challenge,
+            rpId: window.location.hostname,
             allowCredentials: [{ id: base64ToBuffer(credentialId), type: "public-key" }],
-            userVerification: "required"
+            userVerification: "preferred"
           }
         });
 
         if (assertion) {
+          hardwareOk = true;
           sfx("ok");
-          toast("FACE ID CONFIRMED: ROOT ACCESS GRANTED ✓");
+          toast("ROOT ACCESS GRANTED ✓");
           if (currentUser) {
             await setDoc(doc(db, "users", currentUser.uid), { role: "root", isVerified: true }, { merge: true });
           }
@@ -1479,25 +1470,27 @@ buildMenu(); cmd(); slam(); tickNow();
         }
       }
     } catch(err) {
-      console.warn("Passkey bypass or fallback triggered:", err);
+      console.warn("Биометрия не завершена или отменена:", err);
     }
 
-    // Если Passkey ещё не привязан или сработала ошибка — мастер PIN
-    const enteredPin = prompt("SYSTEM OVERRIDE // ВВЕДИТЕ ROOT PIN:");
-    if (enteredPin === ROOT_FALLBACK_PIN) {
-      sfx("ok");
-      toast("ROOT PIN ACCEPTED ✓");
-      if (currentUser) {
-        await setDoc(doc(db, "users", currentUser.uid), { role: "root", isVerified: true }, { merge: true });
+    // Если биометрия не сработала или не настроена — диалог PIN
+    if (!hardwareOk) {
+      const enteredPin = prompt("SYSTEM OVERRIDE // ВВЕДИТЕ ROOT PIN (резерв: 883311):");
+      if (enteredPin === ROOT_FALLBACK_PIN) {
+        sfx("ok");
+        toast("ROOT PIN ACCEPTED ✓");
+        if (currentUser) {
+          await setDoc(doc(db, "users", currentUser.uid), { role: "root", isVerified: true }, { merge: true });
+        }
+        openRootDashboard();
+      } else if (enteredPin !== null) {
+        sfx("tick");
+        alert("403 ACCESS DENIED: Неверный ключ безопасности.");
       }
-      openRootDashboard();
-    } else if (enteredPin !== null) {
-      sfx("tick");
-      alert("403 ACCESS DENIED: Неверный ключ безопасности.");
     }
   }
 
-  // Привязка Face ID текущего устройства
+  // Привязка биометрии
   document.getElementById("rootBindPasskey").onclick = async () => {
     if (!window.PublicKeyCredential) {
       return alert("WebAuthn не поддерживается в этом браузере!");
@@ -1505,36 +1498,44 @@ buildMenu(); cmd(); slam(); tickNow();
     sfx("ok");
     const challenge = new Uint8Array(32);
     window.crypto.getRandomValues(challenge);
+    const domain = window.location.hostname;
 
     try {
       const cred = await navigator.credentials.create({
         publicKey: {
           challenge: challenge,
-          rp: { name: "8M Schedule Secure Core" },
+          rp: { name: "8M Schedule Secure Core", id: domain },
           user: {
             id: new TextEncoder().encode(currentUser ? currentUser.uid : "admin_root"),
-            name: "root",
-            displayName: "System Administrator"
+            name: currentUser ? (currentUser.email || "root") : "root",
+            displayName: "Root Administrator"
           },
-          pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
-          authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+          pubKeyCredParams: [
+            { type: "public-key", alg: -7 },   // ES256 (Apple Secure Enclave, Android)
+            { type: "public-key", alg: -257 }  // RS256 (Windows Hello)
+          ],
+          authenticatorSelection: { 
+            userVerification: "preferred"
+          },
           timeout: 60000
         }
       });
 
+      if (!cred) throw new Error("Устройство отклонило регистрацию ключа");
+
       const rawId = bufferToBase64(cred.rawId);
       await setDoc(doc(db, "root_security", "hardware_lock"), {
         credentialId: rawId,
+        boundHost: domain,
         registeredAt: new Date().toISOString()
-      });
+      }, { merge: true });
 
-      toast("Face ID / Touch ID успешно привязан! ✓");
+      toast("Биометрия / Passkey успешно привязан! ✓");
     } catch(e) {
       alert("Ошибка привязки биометрии: " + e.message);
     }
   };
 
-  // Отрисовка панели управления пользователями
   async function openRootDashboard() {
     const modal = document.getElementById("rootModal");
     const list = document.getElementById("rootUserList");
