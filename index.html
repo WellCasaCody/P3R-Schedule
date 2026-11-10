@@ -3,7 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="Icon.PNG" type="image/png"><meta name="theme-color" content="#0b3cff"><meta name="apple-mobile-web-app-capable" content="yes"><title>Расписание 8М</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="Icon.PNG" type="image/png">
+<!-- Теги для iOS Safari PWA без костылей с цифрой 8 -->
+<link rel="apple-touch-icon" href="Icon.PNG">
+<link rel="apple-touch-icon" sizes="180x180" href="Icon.PNG">
+<meta name="theme-color" content="#0b3cff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="8М">
+<title>Расписание 8М</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,700;1,900&family=Russo+One&family=Rubik:ital,wght@0,900&family=Oswald:wght@700&family=Playfair+Display:wght@900&display=swap" rel="stylesheet">
 <style>
 :root{--bg1:#0a12b0;--bg2:#0b3cff;--bg3:#18c4ff;--acc:#22d3ff;--hi:#e8141c;--ink:#fff}
@@ -23,7 +32,7 @@ body.p5 .bg::before{content:"";position:absolute;right:-10vmax;top:2vmax;width:6
 @keyframes dots{to{background-position:90px 90px,0 0,0 0}}@keyframes spin{to{rotate:360deg}}
 body:not(.p5)::before{content:"";position:fixed;inset:-50%;z-index:-1;background:repeating-conic-gradient(from 0deg at 50% 50%,rgba(255,255,255,.06) 0 5deg,transparent 5deg 13deg);animation:spin 60s linear infinite;pointer-events:none}
 .bar{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:14px 20px;gap:10px}
-.plate{background:#000;border:2px solid #fff;padding:5px 20px;transform:skewX(-12deg);font-weight:900;position:relative;overflow:hidden}
+.plate{background:#000;border:2px solid #fff;padding:5px 20px;transform:skewX(-12deg);font-weight:900;position:relative;overflow:hidden;cursor:pointer}
 .plate span{display:inline-block;transform:skewX(12deg)}
 .plate::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);translate:-120% 0;animation:psh 3.5s ease-in-out infinite}
 @keyframes psh{50%,100%{translate:120% 0}}
@@ -171,6 +180,38 @@ body.p4 .auth-ava.sel{border-color:#ffd400;box-shadow:0 0 8px #ffd400}
 .auth-oauth button{flex:1;background:#fff;color:#000;padding:8px 4px;font-family:'Russo One';font-size:.8rem;transform:skewX(-6deg);border:2px solid #000;box-shadow:2px 2px 0 var(--hi)}
 .auth-tgl{background:none;color:#aaa;text-decoration:underline;font-size:.8rem;margin-top:8px;width:100%;text-align:center}
 
+/* СТИЛИ ТВИТТЕР-ЛЕНТЫ И БЕЙДЖЕЙ */
+.badge-v{display:inline-flex;align-items:center;justify-content:center;background:#1d9bf0;color:#fff;width:15px;height:15px;border-radius:50%;font-size:9px;font-style:normal;margin-left:3px;vertical-align:middle}
+.badge-dev{display:inline-flex;align-items:center;justify-content:center;background:#e8141c;color:#fff;font-size:9px;padding:1px 5px;border-radius:3px;font-style:normal;margin-left:3px;vertical-align:middle}
+.feed-box{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+.feed-create{background:#000;border:2px solid var(--acc);padding:14px;transform:skewX(-6deg);box-shadow:4px 4px 0 #000;margin-bottom:14px}
+body.p5 .feed-create{border-color:var(--hi)}
+.feed-create textarea{width:100%;height:75px;background:#111;color:#fff;border:1px solid #444;padding:8px;font:inherit;font-style:normal;resize:none;outline:none}
+.feed-create select{background:#111;color:#fff;border:1px solid #444;padding:6px;font:inherit;margin-bottom:8px;width:100%;outline:none}
+.feed-post{background:#000;border-left:5px solid var(--acc);padding:12px 16px;transform:skewX(-6deg);position:relative;animation:slam .3s both}
+body.p5 .feed-post{border-left-color:var(--hi);background:#fff;color:#000;box-shadow:4px 4px 0 #000}
+body.p4 .feed-post{border-left-color:#ffd400;background:#000;color:#fff}
+.post-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.post-ava{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #fff}
+.post-author{font-family:'Russo One';font-size:.92rem;display:flex;align-items:center;flex-wrap:wrap;gap:4px}
+.post-subj{font-size:.72rem;background:#111;color:var(--acc);padding:2px 8px;transform:skewX(-4deg);display:inline-block;margin-bottom:6px;border:1px solid #333}
+body.p5 .post-subj{background:#ffebee;color:#c00;border-color:#ffcdd2}
+body.p4 .post-subj{background:#222;color:#ffd400}
+.post-text{font-size:.88rem;font-style:normal;line-height:1.35;word-break:break-word}
+.post-del{position:absolute;top:10px;right:10px;color:#e8141c;font-size:.85rem;cursor:pointer;font-weight:900}
+
+/* СТИЛИ ROOT ПАНЕЛИ */
+#rootModal{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(8px)}
+#rootModal.on{display:flex}
+.root-box{background:#050505;border:3px solid #e8141c;padding:20px;width:min(95vw,650px);max-height:85vh;overflow-y:auto;transform:skewX(-4deg);box-shadow:0 0 35px rgba(232,20,28,.6)}
+.root-ttl{font-family:'Russo One';font-size:1.35rem;color:#e8141c;margin-bottom:8px;text-transform:uppercase}
+.user-row{display:flex;align-items:center;justify-content:space-between;background:#111;padding:8px 12px;margin-bottom:6px;gap:8px;border-left:3px solid #333}
+.user-info{display:flex;align-items:center;gap:8px;flex:1;overflow:hidden}
+.user-info img{width:32px;height:32px;border-radius:50%;object-fit:cover;flex:none}
+.user-btns button{padding:4px 8px;font-size:.7rem;margin-left:4px;border:1px solid #444;font-family:'Russo One'}
+.btn-v{background:#1d9bf0;color:#fff}
+.btn-d{background:#e8141c;color:#fff}
+
 @media(max-width:720px){
  .bar{padding:10px 12px}.plate{padding:4px 12px;font-size:.8rem}.ic{gap:5px}.ic button{width:34px;height:34px;font-size:.95rem}
  #authBtn{font-size:.7rem;padding:3px 8px}
@@ -193,7 +234,7 @@ body.p4 .auth-ava.sel{border-color:#ffd400;box-shadow:0 0 8px #ffd400}
 <div class="ghost" id="ghost">Меню</div>
 
 <header class="bar">
-  <div class="plate"><span id="headerTitle">8М КЛАСС</span></div>
+  <div class="plate" id="headerPlate" title="Панель класса"><span id="headerTitle">8М КЛАСС</span></div>
   <div class="ic">
     <button id="authBtn"><span>ВОЙТИ</span></button>
     <button id="thm" aria-label="Тема (T)">◐</button>
@@ -221,6 +262,36 @@ body.p4 .auth-ava.sel{border-color:#ffd400;box-shadow:0 0 8px #ffd400}
   <div class="ttl"><span>Расписание</span></div>
   <div class="days" id="dy"></div><div id="ls"></div>
   <button class="shr" id="shS">⇪ Поделиться днём</button><button class="back" data-back>◄ Назад</button>
+</div></section>
+
+<!-- ЭКРАН ТВИТТЕР-ЛЕНТЫ ДЗ -->
+<section class="scr" id="m-feed"><div class="box">
+  <div class="ttl"><span>Лента заданий</span></div>
+  
+  <div id="feedCreateBox" class="feed-create" style="display:none">
+    <select id="feedSubject">
+      <option value="Алгебра">Алгебра</option>
+      <option value="Геометрия">Геометрия</option>
+      <option value="Русский язык">Русский язык</option>
+      <option value="Литература">Литература</option>
+      <option value="Физика">Физика</option>
+      <option value="Химия">Химия</option>
+      <option value="История">История</option>
+      <option value="Биология">Биология</option>
+      <option value="География">География</option>
+      <option value="Английский язык">Английский язык</option>
+      <option value="Информатика">Информатика</option>
+      <option value="Вероятность и статистика">Вероятность и статистика</option>
+      <option value="📢 Объявление класса">📢 Объявление класса</option>
+    </select>
+    <textarea id="feedText" maxlength="500" placeholder="Что задали? Номера, параграфы, важное к уроку..."></textarea>
+    <button id="feedSubmitBtn" class="shr" style="margin-top:8px">Опубликовать в ленту</button>
+  </div>
+
+  <div id="feedList" class="feed-box">
+    <div class="card p"><span>Загрузка ленты...</span></div>
+  </div>
+  <button class="back" data-back>◄ Назад</button>
 </div></section>
 
 <section class="scr" id="m-dl"><div class="box">
@@ -260,6 +331,19 @@ body.p4 .auth-ava.sel{border-color:#ffd400;box-shadow:0 0 8px #ffd400}
     <div class="nr">
       <button id="schedSaveBtn" style="background:var(--hi);color:#fff">Применить</button>
       <button id="schedCloseBtn">✕ Отмена</button>
+    </div>
+  </div>
+</div>
+
+<!-- ROOT CONSOLE MODAL -->
+<div id="rootModal">
+  <div class="root-box">
+    <div class="root-ttl">⚡ Root Console // System Control</div>
+    <p style="font-size:.78rem;color:#ccc;margin-bottom:12px;font-style:normal">Управление доступом, выдача синих галочек верификации и назначение в Dev Team.</p>
+    <div id="rootUserList">Загрузка базы пользователей...</div>
+    <div style="margin-top:14px;display:flex;gap:8px">
+      <button class="shr" id="rootBindPasskey" style="margin:0;flex:1">Привязать Face ID / Touch ID</button>
+      <button class="back" id="rootCloseBtn" style="margin:0;flex:none">✕ Закрыть</button>
     </div>
   </div>
 </div>
@@ -328,6 +412,7 @@ try {
 var MENU = [
   ["Сегодня", "m-today"],
   ["Расписание", "m-sched"],
+  ["Лента ДЗ", "m-feed"],
   ["Скачать", "m-dl"],
   ["Класс", "m-about"]
 ];
@@ -423,7 +508,7 @@ function open(id) { sfx("ok"); wipe(function() { swap(id); }); }
 function swap(id) {
   cur = id;
   document.querySelectorAll(".scr").forEach(function(s) { s.classList.toggle("on", s.id == id); });
-  $("#ghost").textContent = id == "m-dl" ? "Скачать" : id == "m-today" ? "Сегодня" : id == "m-menu" ? "Меню" : id == "m-sched" ? "Уроки" : "Класс";
+  $("#ghost").textContent = id == "m-dl" ? "Скачать" : id == "m-today" ? "Сегодня" : id == "m-menu" ? "Меню" : id == "m-sched" ? "Уроки" : id == "m-feed" ? "Лента" : "Класс";
   if (id == "m-sched") draw();
   if (id == "m-today") updToday(true);
   if (id == "m-menu") slam();
@@ -494,7 +579,7 @@ addEventListener("pointerup", function(e) {
   var hint = document.createElement("div"); hint.className = "swh"; document.body.appendChild(hint);
   function clr() { gh.style.marginLeft = ""; dy.style.translate = ""; document.querySelectorAll("#dy .nx").forEach(function(b) { b.classList.remove("nx"); }); }
   addEventListener("pointerdown", function(e) {
-    if (cur != "m-sched" || e.target.closest("#dy,.back,#nm,#authModal,#schedModal")) return;
+    if (cur != "m-sched" || e.target.closest("#dy,.back,#nm,#authModal,#schedModal,#rootModal")) return;
     if (e.pointerType == "mouse" && e.button) return;
     sx = e.clientX; sy = e.clientY; dx = 0; dn = true; lock = 0; pv = null;
   });
@@ -840,12 +925,13 @@ for (var i = 0; i < 40; i++) B.push({x: Math.random(), y: Math.random(), r: 2 + 
 document.addEventListener("keydown", function(e) {
   var k = e.key;
   if (e.target.tagName == "TEXTAREA" || e.target.tagName == "INPUT") {
-    if (k == "Escape") { nclose(); $("#authModal").classList.remove("on"); $("#schedModal").style.display = "none"; }
+    if (k == "Escape") { nclose(); $("#authModal").classList.remove("on"); $("#schedModal").style.display = "none"; $("#rootModal").classList.remove("on"); }
     return;
   }
   if ($("#nm").classList.contains("on")) { if (k == "Escape") nclose(); return; }
   if ($("#authModal").classList.contains("on")) { if (k == "Escape") $("#authModal").classList.remove("on"); return; }
   if ($("#schedModal").style.display == "flex") { if (k == "Escape") $("#schedModal").style.display = "none"; return; }
+  if ($("#rootModal").classList.contains("on")) { if (k == "Escape") $("#rootModal").classList.remove("on"); return; }
   if (k == "t" || k == "T" || k == "е" || k == "Е") theme();
   else if (k == "j" || k == "J" || k == "о" || k == "О") jazz();
   else if (k == "a" || k == "A" || k == "ф" || k == "Ф") setLite();
@@ -875,7 +961,7 @@ if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catc
 buildMenu(); cmd(); slam(); tickNow();
 </script>
 
-<!-- МОДУЛЬ FIREBASE: ВХОД, GOOGLE, APPLE, ВЕРИФИКАЦИЯ, АВАТАРКИ -->
+<!-- МОДУЛЬ FIREBASE: AUTH, ТЕНЕВОЙ ROOT, ПОДТВЕРЖДЕНИЕ ПОЧТЫ, WEBAUTHN, TWITTER-FEED -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
   import { 
@@ -893,7 +979,15 @@ buildMenu(); cmd(); slam(); tickNow();
     getFirestore, 
     doc, 
     setDoc, 
-    getDoc 
+    getDoc,
+    getDocs,
+    collection,
+    addDoc,
+    deleteDoc,
+    query,
+    orderBy,
+    serverTimestamp,
+    onSnapshot
   } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
   import { 
     getStorage, 
@@ -920,14 +1014,19 @@ buildMenu(); cmd(); slam(); tickNow();
   const googleProvider = new GoogleAuthProvider();
   const appleProvider = new OAuthProvider("apple.com");
 
+  // Автоматический перебор расширений и папок для аватарок
   const defaultAvatars = {
     p3: ["p3_makoto", "p3_yukari", "p3_junpei", "p3_akihiko", "p3_aegis"],
     p4: ["p4_yu", "p4_yosuke", "p4_chie", "p4_yukiko", "p4_teddie"],
     p5: ["p5_joker", "p5_morgana", "p5_ryuji", "p5_ann", "p5_makoto"]
   };
 
+  // Резервный мастер-PIN на случай разблокировки root
+  const ROOT_FALLBACK_PIN = "883311";
+
   let currentUser = null;
-  let selectedAvatar = "p3_makoto.PNG";
+  let currentUserDoc = null;
+  let selectedAvatar = "p3_makoto.png";
   let customFile = null;
 
   window.syncNotesToFirebase = async function(notesObj) {
@@ -944,6 +1043,7 @@ buildMenu(); cmd(); slam(); tickNow();
     } catch(e) {}
   };
 
+  // Слушатель состояния авторизации
   onAuthStateChanged(auth, async (user) => {
     const btn = document.getElementById("authBtn");
     if (!btn) return;
@@ -951,44 +1051,91 @@ buildMenu(); cmd(); slam(); tickNow();
     if (user && user.emailVerified) {
       currentUser = user;
       try {
-        const uSnap = await getDoc(doc(db, "users", user.uid));
-        const uData = uSnap.exists() ? uSnap.data() : null;
-        const ava = uData?.avatarUrl || user.photoURL || "Icon.PNG";
-        const name = uData?.displayName || user.displayName || user.email.split("@")[0];
+        const uRef = doc(db, "users", user.uid);
+        const uSnap = await getDoc(uRef);
+        let uData = uSnap.exists() ? uSnap.data() : null;
 
-        btn.innerHTML = `<img src="${ava}" onerror="this.src='Icon.PNG'"><span>${name}</span>`;
-        btn.onclick = () => {
-          sfx("ok");
-          if (confirm(`Выйти из профиля [${name}]?`)) {
-            signOut(auth);
-          }
-        };
+        if (!uData) {
+          uData = {
+            displayName: user.displayName || user.email.split("@")[0],
+            email: user.email,
+            avatarUrl: user.photoURL || "avatars/p3_makoto.png",
+            role: "user",
+            isVerified: false,
+            badges: [],
+            createdAt: new Date().toISOString()
+          };
+          await setDoc(uRef, uData, { merge: true });
+        }
+        currentUserDoc = uData;
 
-        if (uData && uData.notes) {
+        const ava = uData.avatarUrl || user.photoURL || "Icon.PNG";
+        const name = uData.displayName || user.displayName || user.email.split("@")[0];
+        const vBadge = uData.isVerified ? '<i class="badge-v">✓</i>' : '';
+        const dBadge = (uData.badges && uData.badges.includes("dev")) ? '<i class="badge-dev">DEV</i>' : '';
+
+        btn.innerHTML = `<img src="${ava}" onerror="this.src='Icon.PNG'"><span>${name}${vBadge}${dBadge}</span>`;
+        btn.onclick = () => showProfileMenu(uData);
+
+        // Права на постинг в общую ленту ДЗ (только верифицированные, dev или root)
+        const canPost = uData.role === "root" || uData.isVerified || (uData.badges && uData.badges.includes("dev"));
+        const postBox = document.getElementById("feedCreateBox");
+        if (postBox) postBox.style.display = canPost ? "block" : "none";
+
+        if (uData.notes) {
           NOTES = Object.assign(NOTES, uData.notes);
           try { localStorage.notes = JSON.stringify(NOTES); } catch(e) {}
           nrefresh();
         }
 
-        if (uData && uData.customSchedule) {
+        if (uData.customSchedule) {
           S = uData.customSchedule;
           try { localStorage.customSchedule = JSON.stringify(S); } catch(e) {}
           const badge = document.getElementById("aboutScheduleType");
           if (badge) badge.textContent = "Синхронизировано из облака";
           draw(); updToday(true);
         }
-      } catch(e) {}
+      } catch(e) {
+        console.error("Auth state load error:", e);
+      }
     } else {
       currentUser = null;
+      currentUserDoc = null;
       btn.innerHTML = `<span>ВОЙТИ</span>`;
-      btn.onclick = () => {
-        sfx("ok");
-        openAuth("login");
-      };
+      btn.onclick = () => { sfx("ok"); openAuth("login"); };
+      const postBox = document.getElementById("feedCreateBox");
+      if (postBox) postBox.style.display = "none";
     }
   });
 
-  // Автоматический перебор путей к аватаркам (avatars/ и корень, .png и .PNG)
+  // Диалоговое окно профиля
+  function showProfileMenu(data) {
+    sfx("ok");
+    const statusTxt = data.role === "root" ? "⚡ ROOT ADMINISTRATOR" : 
+      data.isVerified ? "✓ Подтверждённый ученик 8М" : 
+      (data.verifyPending ? "⏳ Заявка на рассмотрении" : "Обычный аккаунт");
+
+    let actions = `ПРОФИЛЬ: ${data.displayName}\nСтатус: ${statusTxt}\n\n`;
+    if (!data.isVerified && !data.verifyPending && data.role !== "root") {
+      actions += "1. Запросить синюю галочку верификации\n";
+    }
+    if (data.role === "root") {
+      actions += "2. Открыть панель Root Console\n";
+    }
+    actions += "0. Выйти из профиля";
+
+    const ans = prompt(actions, data.role === "root" ? "2" : "1");
+    if (ans === "1" && !data.isVerified && !data.verifyPending && data.role !== "root") {
+      setDoc(doc(db, "users", currentUser.uid), { verifyPending: true }, { merge: true });
+      toast("Запрос на верификацию отправлен! ✓");
+    } else if (ans === "2" && data.role === "root") {
+      openRootDashboard();
+    } else if (ans === "0") {
+      if (confirm("Выйти из аккаунта?")) signOut(auth);
+    }
+  }
+
+  // Генератор карточек аватарок с фоллбеками на регистр .png / .PNG
   function renderAvatarItem(name, isSelected) {
     return `<img class="auth-ava ${isSelected ? 'sel' : ''}" 
                  src="avatars/${name}.png" 
@@ -996,6 +1143,7 @@ buildMenu(); cmd(); slam(); tickNow();
                  onerror="if(!this.dataset.s){this.dataset.s=1;this.src='avatars/${name}.PNG';this.dataset.path='avatars/${name}.PNG';}else if(this.dataset.s==1){this.dataset.s=2;this.src='${name}.PNG';this.dataset.path='${name}.PNG';}else if(this.dataset.s==2){this.dataset.s=3;this.src='${name}.png';this.dataset.path='${name}.png';}else{this.src='Icon.PNG';}">`;
   }
 
+  // Модалка авторизации и регистрации
   function openAuth(mode) {
     const modal = document.getElementById("authModal");
     const box = document.getElementById("authBox");
@@ -1046,16 +1194,24 @@ buildMenu(); cmd(); slam(); tickNow();
       <button class="auth-tgl" style="color:#e8141c" id="aClose">✕ Закрыть</button>
     `;
 
+    // Вход через Google
     box.querySelector("#btnGoogleLogin").onclick = async () => {
       sfx("ok");
       try {
         const res = await signInWithPopup(auth, googleProvider);
-        await setDoc(doc(db, "users", res.user.uid), {
-          displayName: res.user.displayName || "Ученик",
-          email: res.user.email,
-          avatarUrl: res.user.photoURL || selectedAvatar,
-          lastLogin: new Date().toISOString()
-        }, { merge: true });
+        const uRef = doc(db, "users", res.user.uid);
+        const uSnap = await getDoc(uRef);
+        if (!uSnap.exists()) {
+          await setDoc(uRef, {
+            displayName: res.user.displayName || "Ученик",
+            email: res.user.email,
+            avatarUrl: res.user.photoURL || "avatars/p3_makoto.png",
+            role: "user",
+            isVerified: false,
+            badges: [],
+            createdAt: new Date().toISOString()
+          });
+        }
         modal.classList.remove("on");
         toast("Вход через Google успешен ✓");
       } catch(err) {
@@ -1063,15 +1219,24 @@ buildMenu(); cmd(); slam(); tickNow();
       }
     };
 
+    // Вход через Apple
     box.querySelector("#btnAppleLogin").onclick = async () => {
       sfx("ok");
       try {
         const res = await signInWithPopup(auth, appleProvider);
-        await setDoc(doc(db, "users", res.user.uid), {
-          displayName: res.user.displayName || "Ученик Apple",
-          email: res.user.email,
-          lastLogin: new Date().toISOString()
-        }, { merge: true });
+        const uRef = doc(db, "users", res.user.uid);
+        const uSnap = await getDoc(uRef);
+        if (!uSnap.exists()) {
+          await setDoc(uRef, {
+            displayName: res.user.displayName || "Ученик Apple",
+            email: res.user.email,
+            avatarUrl: "Icon.PNG",
+            role: "user",
+            isVerified: false,
+            badges: [],
+            createdAt: new Date().toISOString()
+          });
+        }
         modal.classList.remove("on");
         toast("Вход через Apple успешен ✓");
       } catch(err) {
@@ -1112,7 +1277,6 @@ buildMenu(); cmd(); slam(); tickNow();
         if (isReg) {
           const name = box.querySelector("#aName").value.trim();
           const cred = await createUserWithEmailAndPassword(auth, email, pass);
-          
           await sendEmailVerification(cred.user);
 
           let avatarUrl = selectedAvatar;
@@ -1126,6 +1290,9 @@ buildMenu(); cmd(); slam(); tickNow();
             displayName: name,
             email: email,
             avatarUrl: avatarUrl,
+            role: "user",
+            isVerified: false,
+            badges: [],
             notes: NOTES,
             customSchedule: localStorage.customSchedule ? JSON.parse(localStorage.customSchedule) : null,
             createdAt: new Date().toISOString()
@@ -1189,6 +1356,248 @@ buildMenu(); cmd(); slam(); tickNow();
       openAuth("login");
     };
   }
+
+  // СЛУШАТЕЛЬ ЛЕНТЫ ДЗ В РЕАЛЬНОМ ВРЕМЕНИ
+  const feedQuery = query(collection(db, "homework_feed"), orderBy("createdAt", "desc"));
+  onSnapshot(feedQuery, (snap) => {
+    const list = document.getElementById("feedList");
+    if (!list) return;
+    list.innerHTML = "";
+
+    if (snap.empty) {
+      list.innerHTML = `<div class="card p"><span>В ленте пока пусто</span><small>Заданий и объявлений ещё не выкладывали</small></div>`;
+      return;
+    }
+
+    snap.forEach((d) => {
+      const p = d.data();
+      const isAuthorOrRoot = (currentUserDoc && currentUserDoc.role === "root") || (currentUser && currentUser.uid === p.authorUid);
+      const postCard = document.createElement("div");
+      postCard.className = "feed-post";
+      postCard.innerHTML = `
+        <div class="post-header">
+          <img class="post-ava" src="${p.authorAva || 'Icon.PNG'}" onerror="this.src='Icon.PNG'">
+          <div class="post-author">
+            ${esc(p.authorName || 'Ученик')}
+            ${p.isVerified ? '<i class="badge-v">✓</i>' : ''}
+            ${p.isDev ? '<i class="badge-dev">DEV</i>' : ''}
+          </div>
+        </div>
+        <div class="post-subj">${esc(p.subject || 'Урок')}</div>
+        <div class="post-text">${esc(p.text || '')}</div>
+        ${isAuthorOrRoot ? `<div class="post-del" data-id="${d.id}" title="Удалить">✕</div>` : ''}
+      `;
+      list.appendChild(postCard);
+    });
+
+    list.querySelectorAll(".post-del").forEach(btn => {
+      btn.onclick = async () => {
+        if (confirm("Удалить это задание из ленты?")) {
+          sfx("ok");
+          await deleteDoc(doc(db, "homework_feed", btn.dataset.id));
+          toast("Пост удален ✓");
+        }
+      };
+    });
+  });
+
+  // Публикация нового поста в ленту
+  document.getElementById("feedSubmitBtn").onclick = async () => {
+    if (!currentUser || !currentUser.emailVerified) {
+      return alert("Для публикации нужно войти в подтверждённый аккаунт!");
+    }
+    const txt = document.getElementById("feedText").value.trim();
+    const subj = document.getElementById("feedSubject").value;
+    if (!txt) return alert("Введи текст задания!");
+
+    sfx("ok");
+    try {
+      await addDoc(collection(db, "homework_feed"), {
+        subject: subj,
+        text: txt,
+        authorName: currentUserDoc.displayName || "Ученик",
+        authorAva: currentUserDoc.avatarUrl || "Icon.PNG",
+        authorUid: currentUser.uid,
+        isVerified: currentUserDoc.isVerified || false,
+        isDev: currentUserDoc.badges?.includes("dev") || false,
+        createdAt: serverTimestamp()
+      });
+      document.getElementById("feedText").value = "";
+      toast("Опубликовано в ленту! ✓");
+    } catch(e) {
+      alert("Ошибка публикации: " + e.message);
+    }
+  };
+
+  // ТЕНЕВОЙ ROOT-ДОСТУП: КРИПТОКЛЮЧ WEBAUTHN + АВАРИЙНЫЙ PIN
+  const bufferToBase64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
+  const base64ToBuffer = (b64) => Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+
+  let plateTaps = 0, plateTimer = null;
+  const plateEl = document.getElementById("headerPlate");
+  if (plateEl) {
+    plateEl.addEventListener("click", () => {
+      plateTaps++;
+      clearTimeout(plateTimer);
+      plateTimer = setTimeout(() => { plateTaps = 0; }, 1200);
+
+      // Тройной клик по плашке 8М КЛАСС
+      if (plateTaps === 3) {
+        plateTaps = 0;
+        triggerRootUnlock();
+      }
+    });
+  }
+
+  async function triggerRootUnlock() {
+    sfx("clock");
+    
+    // Пробуем нативный Secure Enclave (Face ID / Windows Hello)
+    try {
+      const lockSnap = await getDoc(doc(db, "root_security", "hardware_lock"));
+      if (lockSnap.exists() && window.PublicKeyCredential) {
+        const { credentialId } = lockSnap.data();
+        const challenge = new Uint8Array(32);
+        window.crypto.getRandomValues(challenge);
+
+        const assertion = await navigator.credentials.get({
+          publicKey: {
+            challenge: challenge,
+            allowCredentials: [{ id: base64ToBuffer(credentialId), type: "public-key" }],
+            userVerification: "required"
+          }
+        });
+
+        if (assertion) {
+          sfx("ok");
+          toast("FACE ID CONFIRMED: ROOT ACCESS GRANTED ✓");
+          if (currentUser) {
+            await setDoc(doc(db, "users", currentUser.uid), { role: "root", isVerified: true }, { merge: true });
+          }
+          openRootDashboard();
+          return;
+        }
+      }
+    } catch(err) {
+      console.warn("Passkey bypass or fallback triggered:", err);
+    }
+
+    // Если Passkey ещё не привязан или сработала ошибка — мастер PIN
+    const enteredPin = prompt("SYSTEM OVERRIDE // ВВЕДИТЕ ROOT PIN:");
+    if (enteredPin === ROOT_FALLBACK_PIN) {
+      sfx("ok");
+      toast("ROOT PIN ACCEPTED ✓");
+      if (currentUser) {
+        await setDoc(doc(db, "users", currentUser.uid), { role: "root", isVerified: true }, { merge: true });
+      }
+      openRootDashboard();
+    } else if (enteredPin !== null) {
+      sfx("tick");
+      alert("403 ACCESS DENIED: Неверный ключ безопасности.");
+    }
+  }
+
+  // Привязка Face ID текущего устройства
+  document.getElementById("rootBindPasskey").onclick = async () => {
+    if (!window.PublicKeyCredential) {
+      return alert("WebAuthn не поддерживается в этом браузере!");
+    }
+    sfx("ok");
+    const challenge = new Uint8Array(32);
+    window.crypto.getRandomValues(challenge);
+
+    try {
+      const cred = await navigator.credentials.create({
+        publicKey: {
+          challenge: challenge,
+          rp: { name: "8M Schedule Secure Core" },
+          user: {
+            id: new TextEncoder().encode(currentUser ? currentUser.uid : "admin_root"),
+            name: "root",
+            displayName: "System Administrator"
+          },
+          pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
+          authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+          timeout: 60000
+        }
+      });
+
+      const rawId = bufferToBase64(cred.rawId);
+      await setDoc(doc(db, "root_security", "hardware_lock"), {
+        credentialId: rawId,
+        registeredAt: new Date().toISOString()
+      });
+
+      toast("Face ID / Touch ID успешно привязан! ✓");
+    } catch(e) {
+      alert("Ошибка привязки биометрии: " + e.message);
+    }
+  };
+
+  // Отрисовка панели управления пользователями
+  async function openRootDashboard() {
+    const modal = document.getElementById("rootModal");
+    const list = document.getElementById("rootUserList");
+    modal.classList.add("on");
+    list.innerHTML = "<small style='color:#aaa'>Загрузка базы пользователей...</small>";
+
+    try {
+      const snap = await getDocs(collection(db, "users"));
+      list.innerHTML = "";
+
+      snap.forEach(uDoc => {
+        const u = uDoc.data();
+        const row = document.createElement("div");
+        row.className = "user-row";
+        row.innerHTML = `
+          <div class="user-info">
+            <img src="${u.avatarUrl || 'Icon.PNG'}" onerror="this.src='Icon.PNG'">
+            <div>
+              <b>${esc(u.displayName || 'Без имени')}</b> ${u.verifyPending ? '<span style="color:#ffd400">[Ждёт ✓]</span>' : ''}<br>
+              <small style="color:#888">${esc(u.email || '')}</small>
+            </div>
+          </div>
+          <div class="user-btns">
+            <button class="btn-v" data-uid="${uDoc.id}" data-v="${!u.isVerified}">
+              ${u.isVerified ? "Снять ✓" : "Дать ✓"}
+            </button>
+            <button class="btn-d" data-uid="${uDoc.id}" data-dev="${!(u.badges && u.badges.includes('dev'))}">
+              ${(u.badges && u.badges.includes('dev')) ? "- DEV" : "+ DEV"}
+            </button>
+          </div>
+        `;
+        list.appendChild(row);
+      });
+
+      list.querySelectorAll(".btn-v").forEach(b => {
+        b.onclick = async () => {
+          sfx("ok");
+          const val = b.dataset.v === "true";
+          await setDoc(doc(db, "users", b.dataset.uid), { isVerified: val, verifyPending: false }, { merge: true });
+          toast(`Галочка ${val ? 'выдана' : 'снята'} ✓`);
+          openRootDashboard();
+        };
+      });
+
+      list.querySelectorAll(".btn-d").forEach(b => {
+        b.onclick = async () => {
+          sfx("ok");
+          const addDev = b.dataset.dev === "true";
+          const newBadges = addDev ? ["dev"] : [];
+          await setDoc(doc(db, "users", b.dataset.uid), { badges: newBadges }, { merge: true });
+          toast(`Статус DEV ${addDev ? 'назначен' : 'снят'} ✓`);
+          openRootDashboard();
+        };
+      });
+    } catch(err) {
+      list.innerHTML = `<span style="color:red">Ошибка загрузки: ${err.message}</span>`;
+    }
+  }
+
+  document.getElementById("rootCloseBtn").onclick = () => {
+    sfx("tick");
+    document.getElementById("rootModal").classList.remove("on");
+  };
 </script>
 </body>
 </html>
